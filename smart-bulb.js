@@ -19,7 +19,7 @@ module.exports = function(RED) {
 	    if (deviceIP === null||deviceIP === '') {
 			node.status({fill:'red',shape:'ring',text:'Not configured'});
 			return false;
-	    };
+	    }
 		node.status({fill:'grey',shape:'dot',text:'Initializing…'});
 
 		//STARTING and PARAMETERS
