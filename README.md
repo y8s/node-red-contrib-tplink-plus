@@ -1,7 +1,13 @@
 # node-red-contrib-tplink-smarthome
-[![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink-iot.svg?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-tplink-iot) [![Node version](https://img.shields.io/node/v/node-red-contrib-tplink-iot.svg?style=flat-square)](http://nodejs.org/download/) [![CodeFactor](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-iot/badge)](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-iot) [![Github All Releases](https://img.shields.io/github/downloads/mental05/node-red-contrib-tplink-iot/total.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/releases) [![npm](https://img.shields.io/npm/l/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/blob/master/LICENSE) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/Felixls/node-red-contrib-tplink-smarthome/issues)
-
 TP-Link Smart Home Node-Red Nodes
+
+[![GitHub release](https://img.shields.io/github/release/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/releases) [![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink-iot.svg?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-tplink-iot) [![GitHub last commit](https://img.shields.io/github/last-commit/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/commits/master)
+
+[![Node version](https://img.shields.io/node/v/node-red-contrib-tplink-iot.svg?style=flat-square)](http://nodejs.org/download/) [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot) [![CodeFactor](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-iot/badge)](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-iot)
+
+[![Github All Releases](https://img.shields.io/github/downloads/mental05/node-red-contrib-tplink-iot/total.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/releases) [![Liberapay receiving](https://img.shields.io/liberapay/receives/mental05.svg?style=flat-square)](https://liberapay.com/mental05/donate)
+
+[![npm](https://img.shields.io/npm/l/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/blob/master/LICENSE) [![GitHub contributors](https://img.shields.io/github/contributors/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/graphs/contributors) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/Felixls/node-red-contrib-tplink-smarthome/issues)
 
 This is a collection of [Node-RED](https://nodered.org/) nodes that allow you control smart plugs and bulbs from the TP-Link smart home ecosystem.
 
@@ -24,9 +30,9 @@ or you can use the Palette Manager in Node-RED.
 
 `Device IP` - Type in the Device IP address manually or press the button to retreive all locally available plug devices
 
-`Poll interval` - Interval that is used to poll availability of devices *(min 500ms / recommended between 5000ms and 10000ms)*
+`Poll interval` - Interval that is used to poll availability of devices *(>500ms / Recommended 5000-10000ms)*
 
-`Event poll interval` - Interval that is used to poll active devices for events *(min 500ms / recommended between 1000ms and 3000ms)*
+`Event poll interval` - Interval that is used to poll active devices for events *(>500ms / Recommended 1000-3000ms)*
 
 # Inputs
 
