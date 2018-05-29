@@ -34,36 +34,26 @@
 				$('#node-input-device').replaceWith('<input type="text" id="node-input-device" style="width: 60%;"/>');
 				$('#node-input-device').val(current);
 			}
-
 			function searchAndSelectDevice() {
 				var current = $('#node-input-device').val();
 				$('#node-input-device').replaceWith('<select id="node-input-device" style="width: 60%;"></select>');
 				$('#node-input-device').append('<option selected="selected" value="null">searching…</option>');
-
 				$.get('smarthome/plugs')
 				.done( function(data) {
 					var devices = JSON.parse(data);
-
 					if(devices.length <= 0)	{
 						RED.notify("No TP-Link smart plug found.", "error");
 					}
-
-					// reset options
 					$('#node-input-device').empty();
-
-					// Set devices as options
 					devices.forEach(function(ip) {
 						$('#node-input-device').append('<option value="' + ip + '">' + ip + '</option>');
 					});
-
-					// select current value
 					$('#node-input-device').val(current);
 				})
 				.fail(function() {
 					RED.notify("Something went wrong. Please retry.", "error");
 				});
 			}
-
 			$(document).on('change', '#node-input-device', function() {
         if ($('#node-input-name').val().trim().length === 0) {
           var currentDeviceIP = $('#node-input-device').val();
@@ -78,7 +68,6 @@
           }
         }
 			});
-
 			$('#node-input-scan').click(function() {
 				if($('#node-input-device').prop("tagName") === "INPUT") {
 					searchAndSelectDevice();
@@ -88,9 +77,7 @@
       });
     }
   });
-
 </script>
-
 <script type="text/x-red" data-template-name="smart-plug">
   <div class="form-row">
     <label for="node-input-name"><i class="icon-tag"></i> Name</label>
@@ -110,48 +97,56 @@
 		<input type="text" placeholder="2000" id="node-input-eventInterval">
 	</div>
 </script>
-
 <script type="text/x-red" data-help-name="smart-plug">
-  <p>This node controls a TP-Link Smart Plug</p>
+    <p>This node controls a <b>TP-Link Smart Plug</b>.</p>
+    <p>Full support for <a href="https://www.tp-link.com/us/products/details/cat-5516_HS100.html" target="_blank" rel="external">HS100</a> and <a href="https://www.tp-link.com/us/products/details/cat-5516_HS110.html" target="_blank" rel="external">HS110</a>.</p>
 
-	<p>Parameters:</p>
+    <h3>Parameters</h3>
+    <p>Configurable properties of the node required for succesfull deploy.</p>
+    <ul>
+      <li><code>Name</code> - Type in the name of the host manually or keep the default device name.</li>
+      <li><code>Device IP</code> - Type in the Device IP address manually or press the button to retreive all locally available plug devices.</li>
+      <li><code>Poll interval</code> - Interval that is used to poll availability of devices <em>(Min. 500ms / Recommended 5000-10000ms.)</em></li>
+      <li><code>Event poll interval</code> - Interval that is used to poll active devices for events <em>(Min. 500ms / Recommended 1000ms-3000ms.)</em></li>
+    </ul>
+    <p>If any "TCP Timeout" console errors occur raise the timeout limit to at least 15s <em>(15000ms)</em> in your Node-RED's <b>settings.js</b>.</p>
 
-	<h3>Name</h3>
-    <p>Type in the name of the host manually or keep the default device name</p>
-
-  <h3>Device IP</h3>
-    <p>Type in the Device IP address manually or press the button to retreive all locally available plug devices</p>
-
-  <h3>Poll interval</h3>
-    <p>Interval that is used to poll availability of devices (min 500ms / recommended between 5000ms and 10000ms)</p>
-
-  <h3>Event poll interval</h3>
-    <p>Interval that is used to poll active devices for events (min 500ms / recommended between 1000ms and 3000ms)</p>
-
-  <h3>Inputs</h3>
+    <h3>Inputs</h3>
+    <p>Control the plug by setting it's properties.</p>
     <dl class="message-properties">
-    <dt>payload
-        <span class="property-type">string | boolean</span>
-    </dt>
+      <dt>msg.payload<span class="property-type">string | boolean</span></dt>
+      <ul>
+        <li><code>true</code> - Turn on the device.</li>
+        <li><code>false</code> - Turn off the device.</li>
+      </ul>
+    </dl>
 
-    <p>
-    <p><b>On/Off</b></p>
-    <p>true: Turn on the device.</p>
-    <p>false: Turn off the device.</p>
+    <h3>Commands</h3>
+    <p>Force the plug node to output when injected as strings.</p>
+    <dl class="message-properties">
+      <dt>msg.payload<span class="property-type">string</span></dt>
+      <ul>
+        <li><code>getInfo</code> - Fetch the device proprieties, such as brightness, temperature and many more.</li>
+        <li><code>getMeterInfo</code> - Fetch the current device consumption.</li>
+        <li><code>eraseStats</code> - Clear all the meter statistics.</li>
+        <li><code>clearEvents</code> - Unsubscribe from events.</li>
+      </ul>
+    </dl>
 
-    <p><b>Commands</b></p>
-    <p>getInfo: Fetch the device information.</p>
-    <p>getMeterInfo: Fetch the current device consumption.</p>
-    <p>clearEvents: Unsubscribe events.</p>
-    <p>eraseStats: Clear all the meter statistics.</p>
+    <h3>Events</h3>
+    <p>Subscribe to outputs based on plug's events. Frequency set by <code>Event poll interval</code>.</p>
+    <dl class="message-properties">
+      <dt>msg.payload<span class="property-type">string</span></dt>
+      <ul>
+        <li><code>getInfoEvents</code> - Subscribe to proprieties` events.</li>
+        <li><code>getPowerUpdateEvents</code> - Subscribe just to power ON/OFF events.</li>
+        <li><code>getMeterEvents</code> - Subscribe to meter information events.</li>
+        <li><code>getInUseEvents</code> - Subscribe to device usage events.</li>
+        <li><code>getOnlineEvents</code> - Subscribe just to online/offline events.</li>
+      </ul>
+    </dl>
+    <p>Multiple events can be used as a list separated with the <code>|</code> character.</p>
 
-    <p><b>Events</b></p>
-    <p>getMeterEvents: Subscribe to meter information events.</p>
-    <p>getInfoEvents: Subscribe to information events.</p>
-    <p>getPowerUpdateEvents: Subscribe to power on/off events.</p>
-    <p>getInUseEvents: Subscribe to device usage events.</p>
-    <p>getOnlineEvents: Subscribe to online/offline events.</p>
-
-    <p>Multiple events can be used as a list separated with the `|` character.</p>
-    </p>
+    <h3>Get involved</h3>
+    <p>Fork and help the node on <a href="https://github.com/mental05/node-red-contrib-tplink-iot" target="_blank" rel="external">GIT Hub</a>.<br>
   </script>

@@ -2,21 +2,21 @@ module.exports = function(RED) {
 	'use strict';
 	const Client = require('tplink-smarthome-api').Client;
 	function SmartBulbNode(config) {
-	    RED.nodes.createNode(this, config);
+		RED.nodes.createNode(this, config);
 		this.config = {
 			name: config.name,
 			device: config.device,
 			interval: config.interval,
 			eventInterval: config.eventInterval
 		};
-	    const deviceIP = this.config.device;
-	    const moment = require('moment');
-	    const numeral = require('numeral');
-	    const context = this.context();
-	    const node = this;
-	    node.deviceInstance = null;
-	    node.deviceConnected = false;
-	    if (deviceIP === null||deviceIP === '') {
+		const deviceIP = this.config.device;
+		const moment = require('moment');
+		const numeral = require('numeral');
+		const context = this.context();
+		const node = this;
+		node.deviceInstance = null;
+		node.deviceConnected = false;
+		if (deviceIP === null||deviceIP === '') {
 			node.status({fill:'red',shape:'ring',text:'Not configured'});
 			return false;
 	    }
@@ -39,9 +39,9 @@ module.exports = function(RED) {
 			})
 			.catch(() => {return node.handleConnectionError()});
 		};
-		node.disconnectClient = function () {node.deviceConnected = false};
-		node.isClientConnected = function () {return node.deviceConnected === true};
-		node.startIsAlivePolling = function () {
+		node.disconnectClient = function() {node.deviceConnected = false};
+		node.isClientConnected = function() {return node.deviceConnected === true};
+		node.startIsAlivePolling = function() {
 			node.pingPolling = setInterval(function() {
         		if (node.isClientConnected()) node.deviceInstance.getInfo().catch(() => {return node.handleConnectionError()});
         		else return node.connectClient()
@@ -78,7 +78,7 @@ module.exports = function(RED) {
 			const EVENT_ACTIONS = ['getMeterEvents','getInfoEvents','getPowerUpdateEvents','getOnlineEvents'];
 			if(msg.payload == true||msg.payload == false) {
 				node.deviceInstance.setPowerState(msg.payload).then(() => {node.sendDeviceSysInfo()})
-			.catch(error => {return node.handleConnectionError(error)});
+				.catch(error => {return node.handleConnectionError(error)});
 			} else if (msg.payload.includes('brightness')) {
 				const brightness = parseInt(msg.payload.split(':')[1]);
 				node.deviceInstance.lighting.setLightState({brightness:brightness}).then(() => {node.sendDeviceSysInfo()})
@@ -176,7 +176,7 @@ module.exports = function(RED) {
 		};
 		node.handleConnectionError = function(error) {
 			if (error) node.error(error);
-			node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
+			node.status({fill:'red',shape:'ring',text:'not reachable'});
 			node.disconnectClient();
 			return false;
 		};
