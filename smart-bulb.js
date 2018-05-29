@@ -88,6 +88,8 @@ module.exports = function(RED) {
 				node.deviceInstance.lighting.setLightState({color_temp:temperature}).then(() => {node.sendDeviceSysInfo()})
 				.catch(error => {return node.handleConnectionError(error)})
 			} else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
+			else if (msg.payload === 'getCloudInfo') node.sendDeviceCloudInfo();
+			else if (msg.payload === 'switch') node.deviceInstance.togglePowerState();
 			else if (msg.payload === 'getMeterInfo') node.sendDeviceMeterInfo();
 			else if (msg.payload === 'clearEvents') context.set('action', msg.payload);
 			else if (msg.payload === 'eraseStats') node.sendEraseStatsResult();
@@ -118,6 +120,15 @@ module.exports = function(RED) {
 					context.set('state','off');
 					node.status({fill:'red',shape:'dot',text:'Turned OFF'});
 				}
+				let msg = {};
+				msg.payload = info;
+				msg.payload.timestamp = moment().format();
+				node.send(msg);
+			}).catch(error => {return node.handleConnectionError(error)});
+		};
+		node.sendDeviceCloudInfo = function() {
+			node.deviceInstance.cloud.getInfo()
+			.then(info => {
 				let msg = {};
 				msg.payload = info;
 				msg.payload.timestamp = moment().format();

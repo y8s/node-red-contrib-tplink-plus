@@ -44,6 +44,8 @@ or you can use the Palette Manager in Node-RED.
 
 `false` - Turn off the device.
 
+`switch` - Toggle oposite power state of the device.
+
 ### Brightness
 
 `brightness:[value 1-100]`
@@ -59,6 +61,8 @@ or you can use the Palette Manager in Node-RED.
 ### Commands
 
 `getInfo` - Fetch the device information.
+
+`getCloudInfo` - Fetch the device information from the cloud *(Limited to bulbs.)*
 
 `getMeterInfo` - Fetch the current device consumption.
 

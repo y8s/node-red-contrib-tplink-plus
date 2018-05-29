@@ -19,7 +19,6 @@
 					return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
 				}
       }
-
     },
     inputs: 1,
     outputs: 1,
@@ -35,36 +34,26 @@
 				$('#node-input-device').replaceWith('<input type="text" id="node-input-device" style="width: 60%;"/>');
 				$('#node-input-device').val(current);
 			}
-
 			function searchAndSelectDevice() {
 				var current = $('#node-input-device').val();
 				$('#node-input-device').replaceWith('<select id="node-input-device" style="width: 60%;"></select>');
 				$('#node-input-device').append('<option selected="selected" value="null">searching…</option>');
-
 				$.get('smarthome/bulbs')
 				.done( function(data) {
 					var devices = JSON.parse(data);
-
 					if(devices.length <= 0)	{
 						RED.notify("No TP-Link smart bulb found.", "error");
 					}
-
-					// reset options
 					$('#node-input-device').empty();
-
-					// Set devices as options
 					devices.forEach(function(ip) {
 						$('#node-input-device').append('<option value="' + ip + '">' + ip + '</option>');
 					});
-
-					// select current value
 					$('#node-input-device').val(current);
 				})
 				.fail(function() {
 					RED.notify("Something went wrong. Please retry.", "error");
 				});
 			}
-
 			$(document).on('change', '#node-input-device', function() {
         if ($('#node-input-name').val().trim().length === 0) {
           var currentDeviceIP = $('#node-input-device').val();
@@ -79,7 +68,6 @@
           }
         }
 			});
-
 			$('#node-input-scan').click(function() {
 				if($('#node-input-device').prop("tagName") === "INPUT") {
 					searchAndSelectDevice();
@@ -89,9 +77,7 @@
       });
     }
   });
-
 </script>
-
 <script type="text/x-red" data-template-name="smart-bulb">
   <div class="form-row">
     <label for="node-input-name"><i class="icon-tag"></i> Name</label>
@@ -111,7 +97,6 @@
 		<input type="text" placeholder="2000" id="node-input-eventInterval">
 	</div>
 </script>
-
 <script type="text/x-red" data-help-name="smart-bulb">
     <p>This node controls a <b>TP-Link Smart Bulb</b>.</p>
     <p>Full support for <a href="https://www.tp-link.com/us/products/details/cat-5609_LB100.html" target="_blank" rel="external">LB100</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB200.html" target="_blank" rel="external">LB200</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB110.html" target="_blank" rel="external">LB110</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB120.html" target="_blank" rel="external">LB120</a>.</br>Some support for <a href="https://www.tp-link.com/us/products/details/cat-5609_LB130.html" target="_blank" rel="external">LB130</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB230.html" target="_blank" rel="external">LB230</a>.</p>
@@ -133,6 +118,7 @@
       <ul>
       	<li><code>true</code> - Turn on the device.</li>
       	<li><code>false</code> - Turn off the device.</li>
+        <li><code>switch</code> - Switch the power state of the device.</li>
       	<li><code>brightness:[1-100]</code> - Sets the brightness of the bulb.</li>
         <li><code>temperature:[2700-6500]</code> - Sets the temperature of the bulb.</li>
       </ul>
@@ -144,6 +130,7 @@
     	<dt>msg.payload<span class="property-type">string</span></dt>
       <ul>
       	<li><code>getInfo</code> - Fetch the device proprieties, such as brightness, temperature and many more.</li>
+        <li><code>getCloudInfo</code> - Fetch the device proprieties, such as username, bind status and many more, from the cloud.</li>
       	<li><code>getMeterInfo</code> - Fetch the current device consumption.</li>
         <li><code>eraseStats</code> - Clear all the meter statistics.</li>
         <li><code>clearEvents</code> - Unsubscribe from events.</li>
@@ -164,6 +151,5 @@
     <p>Multiple events can be used as a list separated with the <code>|</code> character.</p>
 
     <h3>Get involved</h3>
-    <p>Fork and help the node on <a href="https://github.com/Felixls/node-red-contrib-tplink-smarthome" target="_blank" rel="external">GIT Hub</a>.<br>
-    Support me and my work on <a href="https://www.patreon.com/felixls" target="_blank" rel="external">Patron</a>.</p>
+    <p>Fork and help the node on <a href="https://github.com/mental05/node-red-contrib-tplink-iot" target="_blank" rel="external">GIT Hub</a>.<br>
 </script>
