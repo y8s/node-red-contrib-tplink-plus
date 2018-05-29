@@ -1,6 +1,7 @@
 .DS_Store
 .github
 .git
+.editorconfig
 node_modules/
 /dist/
 npm-debug.log*
