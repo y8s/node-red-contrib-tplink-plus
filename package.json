@@ -19,6 +19,10 @@
       "smart-bulb": "smart-bulb.js"
     }
   },
+  "engines": {
+    "node": ">=0.10.29",
+    "npm": ">=1.4.21"
+  },
   "keywords": [
     "node-red",
     "tplink",
