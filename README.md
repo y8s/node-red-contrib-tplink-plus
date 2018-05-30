@@ -28,7 +28,7 @@ or you can use the Palette Manager in Node-RED.
 
 `Name` - Type in the name of the host manually or keep the default device name
 
-`Device IP` - Type in the Device IP address manually or press the button to retreive all locally available plug devices
+`Device IP` - Type in the Device IP address manually or press the button to retrieve all locally available plug devices
 
 `Poll interval` - Interval that is used to poll availability of devices *(>500ms / Recommended 5000-10000ms)*
 
@@ -44,7 +44,7 @@ or you can use the Palette Manager in Node-RED.
 
 `false` - Turn off the device.
 
-`switch` - Toggle oposite power state of the device.
+`switch` - Toggle opposite power state of the device.
 
 ### Brightness
 
