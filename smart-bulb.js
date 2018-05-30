@@ -80,13 +80,37 @@ module.exports = function(RED) {
 				node.deviceInstance.setPowerState(msg.payload).then(() => {node.sendDeviceSysInfo()})
 				.catch(error => {return node.handleConnectionError(error)});
 			} else if (msg.payload.includes('brightness')) {
-				const brightness = parseInt(msg.payload.split(':')[1]);
-				node.deviceInstance.lighting.setLightState({brightness:brightness}).then(() => {node.sendDeviceSysInfo()})
-				.catch(error => {return node.handleConnectionError(error)});
+        const brightness = parseInt(msg.payload.split(':')[1]);
+        node.deviceInstance.getSysInfo()
+        .then(info => {
+          if (info.is_dimmable === 1) {
+            if (brightness >= 1 && brightness <= 100) {
+              return node.deviceInstance.lighting.setLightState({brightness:brightness});
+            } else {
+              throw "Brightness Should be between 1 and 100.";
+            }
+          } else {
+            throw "Changing Brightness is not supported !.";
+          }
+        })
+        .then(() => node.sendDeviceSysInfo())
+        .catch(error => {return node.sendError(error)});
 			} else if (msg.payload.includes('temperature')){
-				const temperature = parseInt(msg.payload.split(':')[1]);
-				node.deviceInstance.lighting.setLightState({color_temp:temperature}).then(() => {node.sendDeviceSysInfo()})
-				.catch(error => {return node.handleConnectionError(error)})
+        const temperature = parseInt(msg.payload.split(':')[1]);
+        node.deviceInstance.getSysInfo()
+        .then(info => {
+          if (info.is_variable_color_temp === 1) {
+            if (temperature >= 2700 && temperature <= 6500) {
+              return node.deviceInstance.lighting.setLightState({color_temp:temperature});
+            } else {
+              throw "Temperature Should be between 2700 and 6500.";
+            }
+          } else {
+            throw "Changing Temperature is not supported !.";
+          }
+        })
+        .then(() => node.sendDeviceSysInfo())
+        .catch(error => {return node.sendError(error)});
 			} else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
 			else if (msg.payload === 'getCloudInfo') node.sendDeviceCloudInfo();
 			else if (msg.payload === 'switch') node.deviceInstance.togglePowerState();
@@ -178,6 +202,10 @@ module.exports = function(RED) {
 			if (error) node.error(error);
 			node.status({fill:'red',shape:'ring',text:'not reachable'});
 			node.disconnectClient();
+			return false;
+    };
+    node.sendError = function(error) {
+			if (error) node.error(error);
 			return false;
 		};
 		node.on('close', function() {
