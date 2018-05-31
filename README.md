@@ -1,4 +1,4 @@
-# node-red-contrib-tplink-smarthome
+# node-red-contrib-tplink-iot
 TP-Link Smart Home Node-Red Nodes
 
 [![GitHub release](https://img.shields.io/github/release/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/releases) [![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink-iot.svg?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-tplink-iot) [![GitHub last commit](https://img.shields.io/github/last-commit/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/commits/master)
