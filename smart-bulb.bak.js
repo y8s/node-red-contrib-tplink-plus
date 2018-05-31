@@ -222,7 +222,7 @@ module.exports = function(RED) {
 				client.stopDiscovery();
 				res.end(JSON.stringify(devices));
 			}, discoveryTimeout);
-		} catch(error) {res.sendStatus(500).send(error.message);}
+		} catch(error) {res.sendStatus(500).send(error.message)}
 	});
 	RED.httpAdmin.get('/smarthome/bulb', (req, res) => {
 		if (!req.query.ip) return res.status(500).send('Missing Device IP…');
