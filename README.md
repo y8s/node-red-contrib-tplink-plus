@@ -84,4 +84,9 @@ or you can use the Palette Manager in Node-RED.
 
 *Multiple events can be used as a list separated with the `|` character.*
 
+# For developers
+
+Nodes are made available to Node-RED in `.js` files minimized by Google's [Closure Compiler](https://developers.google.com/closure/compiler/).
+HOWEVER an original, up-to-date, file is included as `.js.bak` to easily modify code. Must be recompiled or copied as `.js` for code to reflect in you app.
+
 [![https://nodei.co/npm/node-red-contrib-tplink-iot.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/node-red-contrib-tplink-iot.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-red-contrib-tplink-iot)

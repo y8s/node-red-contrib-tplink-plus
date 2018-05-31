@@ -1,9 +1,10 @@
 .DS_Store
-.github
-.git
-.editorconfig
 node_modules/
 /dist/
+.editorconfig
+.github/
+.git/
+examples/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

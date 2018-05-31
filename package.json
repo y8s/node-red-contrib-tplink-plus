@@ -23,6 +23,25 @@
     "node": ">=0.10.29",
     "npm": ">=1.4.21"
   },
+  "dependencies": {
+    "moment": "^2.20.1",
+    "numeral": "^2.0.6",
+    "tplink-smarthome-api": "^0.22.0"
+  },
+  "files":[
+    "examples/",
+    "icons/",
+    "LICENSE",
+    "README.md",
+    ".npmignore",
+    "package.json",
+    "smart-bulb.js",
+    "smart-plug.js",
+    "smart-bulb.js.bak",
+    "smart-plug.js.bak",
+    "smart-bulb.html",
+    "smart-plug.html"
+  ],
   "keywords": [
     "node-red",
     "tplink",
@@ -47,10 +66,5 @@
   ],
   "bugs": {
     "url": "https://github.com/mental05/node-red-contrib-tplink-iot/issues"
-  },
-  "dependencies": {
-    "moment": "^2.20.1",
-    "numeral": "^2.0.6",
-    "tplink-smarthome-api": "^0.22.0"
   }
 }
