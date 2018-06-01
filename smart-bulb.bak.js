@@ -105,6 +105,7 @@ module.exports = function(RED) {
         		.catch(error => {return node.sendError(error)});
 			} else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
 			else if (msg.payload === 'getCloudInfo') node.sendDeviceCloudInfo();
+			else if (msg.payload === 'getQuickInfo') node.sendDeviceQuickInfo();
 			else if (msg.payload === 'switch') node.deviceInstance.togglePowerState();
 			else if (msg.payload === 'getMeterInfo') node.sendDeviceMeterInfo();
 			else if (msg.payload === 'clearEvents') context.set('action', msg.payload);
@@ -144,6 +145,15 @@ module.exports = function(RED) {
 		};
 		node.sendDeviceCloudInfo = function() {
 			node.deviceInstance.cloud.getInfo()
+			.then(info => {
+				let msg = {};
+				msg.payload = info;
+				msg.payload.timestamp = moment().format();
+				node.send(msg);
+			}).catch(error => {return node.handleConnectionError(error)});
+		};
+		node.sendDeviceQuickInfo = function() {
+			node.deviceInstance.getInfo()
 			.then(info => {
 				let msg = {};
 				msg.payload = info;

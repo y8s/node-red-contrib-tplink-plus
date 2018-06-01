@@ -1,3 +1,4 @@
+
 # node-red-contrib-tplink-iot
 TP-Link Smart Home Node-Red Nodes
 
@@ -36,9 +37,9 @@ or you can use the Palette Manager in Node-RED.
 
 # Inputs
 
-## payload: string | boolean
+> payload: string | boolean
 
-### On/Off
+## On/Off
 
 `true` - Turn on the device.
 
@@ -46,23 +47,25 @@ or you can use the Palette Manager in Node-RED.
 
 `switch` - Toggle opposite power state of the device.
 
-### Brightness
+## Brightness
 
 `brightness:[value 1-100]`
 
 *Example: Send payload as `brightness:25` to set brightness of the bulb to 25%.*
 
-### Temperature
+## Temperature
 
 `temperature:[value 2700-6500]`
 
 *Example: Send payload as `temperature:5000` to set temperature of the bulb to 5000k.*
 
-### Commands
+## Commands
 
 `getInfo` - Fetch the device information.
 
-`getCloudInfo` - Fetch the device information from the cloud *(Limited to bulbs.)*
+`getCloudInfo` - Fetch the device information from the cloud.
+
+`getQuickInfo` - Fetch most popular proprieties, such as username, device consumption, mode, lighting state, and many more.
 
 `getMeterInfo` - Fetch the current device consumption.
 
@@ -70,7 +73,7 @@ or you can use the Palette Manager in Node-RED.
 
 `eraseStats` - Clear all the meter statistics.
 
-### Events
+## Events
 
 `getMeterEvents` - Subscribe to meter information events.
 
@@ -87,6 +90,10 @@ or you can use the Palette Manager in Node-RED.
 # For developers
 
 Nodes are made available to Node-RED in `.js` files minimized by Google's [Closure Compiler](https://developers.google.com/closure/compiler/).
-HOWEVER an original, up-to-date, file is included as `.bak.js` to easily modify code. Must be recompiled or copied as `.js` for code to reflect in you app.
+
+*HOWEVER an original, up-to-date, file is included as `.bak.js` to easily modify code. Must be recompiled or copied as `.js` for code to reflect in you app.*
+
+This repo. is *(mainly)* coded on [Node 10.3.0](https://github.com/nodejs/node/blob/master/doc/changelogs/CHANGELOG_V10.md#10.3.0) with [Node-RED 0.18.7](https://github.com/node-red/node-red/blob/master/CHANGELOG.md) on [Windows 10 Home Build 17134.81](https://support.microsoft.com/ro-ro/help/4100403/windows-10-update-kb4100403).
+Runs succesfully in a [Raspberry Pi 3 Model B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/) on standard Raspbian Stretch's [Node 0.10.29](https://nodejs.org/en/blog/release/v0.10.29/) and matching Node-RED.
 
 [![https://nodei.co/npm/node-red-contrib-tplink-iot.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/node-red-contrib-tplink-iot.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-red-contrib-tplink-iot)
