@@ -77,7 +77,13 @@ module.exports = function(RED) {
         node.on('input', function(msg) {
             if (!node.isClientConnected()) return node.handleConnectionError('not reachable');
             const EVENT_ACTIONS = ['getMeterEvents','getInfoEvents','getPowerUpdateEvents','getInUseEvents','getOnlineEvents'];
-            if(msg.payload == true||msg.payload == false) {
+			// test to see if user send a string "true" or "false" or "on" or "off" and change it to boolean true/false
+			if (typeof msg.payload === 'string' || msg.payload instanceof String) {
+				var msg_test = msg.payload.toUpperCase();
+	            if(msg_test == 'TRUE'||msg_test == 'ON') {msg.payload = true;}
+				if(msg_test == 'FALSE'||msg_test == 'OFF') {msg.payload = false;}
+			}
+			if(msg.payload == true||msg.payload == false) {
                 node.deviceInstance.setPowerState(msg.payload).then(() => {node.sendDeviceSysInfo()})
                 .catch(error => {return node.handleConnectionError(error)});
             } else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
