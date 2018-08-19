@@ -1,12 +1,13 @@
 {
   "name": "node-red-contrib-tplink-iot",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "A collection of Node-RED nodes for TP-Link smart-home devices.",
   "homepage": "https://github.com/mental05/node-red-contrib-tplink-iot",
   "author": "Dragoiu Robert <dragoiu.robert@gmail.com> (https://facebook.com/dopepixels)",
   "contributors":[
     "Barney Rubble <felixls.pic@gmail.com> (http://acloudhub.info/resume/)",
-  	"Raj Amal <raj.amalw@gmail.com> (https://www.learn2crack.com)"
+  	"Raj Amal <raj.amalw@gmail.com> (https://www.learn2crack.com)",
+    "juggledad (https://github.com/juggledad)"
   ],
   "license": "MIT",
   "repository": {
