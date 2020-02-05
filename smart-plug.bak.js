@@ -1,3 +1,5 @@
+const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]';
+
 module.exports = function(RED) {
     'use strict';
     const Client = require('tplink-smarthome-api').Client;
@@ -77,30 +79,84 @@ module.exports = function(RED) {
         node.on('input', function(msg) {
             if (!node.isClientConnected()) return node.handleConnectionError('not reachable');
             const EVENT_ACTIONS = ['getMeterEvents','getInfoEvents','getPowerUpdateEvents','getInUseEvents','getOnlineEvents'];
-			// test to see if user send a string "true" or "false" or "on" or "off" and change it to boolean true/false
-			if (typeof msg.payload === 'string' || msg.payload instanceof String) {
-				var msg_test = msg.payload.toUpperCase();
-	            if(msg_test == 'TRUE'||msg_test == 'ON') {msg.payload = true;}
-				if(msg_test == 'FALSE'||msg_test == 'OFF') {msg.payload = false;}
-			}
-			if(msg.payload == true||msg.payload == false) {
-                node.deviceInstance.setPowerState(msg.payload).then(() => {node.sendDeviceSysInfo()})
-                .catch(error => {return node.handleConnectionError(error)});
-            } else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
-            else if (msg.payload === 'getCloudInfo') node.sendDeviceCloudInfo();
-            else if (msg.payload === 'getQuickInfo') node.sendDeviceQuickInfo();
-            else if (msg.payload === 'switch') node.deviceInstance.togglePowerState();
-            else if (msg.payload === 'getMeterInfo') node.sendDeviceMeterInfo();
-            else if (msg.payload === 'clearEvents') context.set('action', msg.payload);
-            else if (msg.payload === 'eraseStats') node.sendEraseStatsResult();
-            else {
-                const actions = msg.payload.split('|');
-                let enabledActions = [];
-                actions.forEach(action => {
-                    if (EVENT_ACTIONS.indexOf(action) !== -1) enabledActions.push(action);
-                });
-                if (enabledActions.length > 0) context.set('action', enabledActions.join('|'));
-                else context.set('action', '');
+            let enabledActions = [];
+
+            if (isPlainObject(msg.payload)) {
+                if (msg.payload.hasOwnProperty('state')) {
+                    node.deviceInstance.setPowerState(msg.payload.state)
+                        .then(() => {node.sendDeviceSysInfo()})
+                        .catch(error => {return node.handleConnectionError(error)});
+                }
+
+                if (msg.payload.hasOwnProperty('brightness')) {
+                    node.deviceInstance.dimmer.setBrightness(msg.payload.brightness)
+                        .then(() => {node.sendDeviceSysInfo()})
+                        .catch(error => {return node.handleConnectionError(error)});
+                }
+
+                if (msg.payload.hasOwnProperty('events')) {
+                    msg.payload.events.forEach(action => {
+                        if (EVENT_ACTIONS.indexOf(action) !== -1) enabledActions.push(action);
+                    });
+
+                    if (enabledActions.length > 0) {
+                        context.set('action', enabledActions.join('|'));
+                    } else {
+                        context.set('action', '');
+                    }
+                }
+            } else {
+                // test to see if user send a string "true" or "false" or "on" or "off" and change it to boolean true/false
+                if (typeof msg.payload === 'string' || msg.payload instanceof String) {
+                    let msg_test = msg.payload.toUpperCase();
+                    if (msg_test === 'TRUE' || msg_test === 'ON') msg.payload = true;
+                    if (msg_test === 'FALSE' || msg_test === 'OFF') msg.payload = false;
+                }
+
+                switch (msg.payload) {
+                    case true:
+                    case false:
+                        node.deviceInstance.setPowerState(msg.payload)
+                            .then(() => {node.sendDeviceSysInfo()})
+                            .catch(error => {return node.handleConnectionError(error)});
+                        break;
+
+                    case 'switch':
+                        node.deviceInstance.togglePowerState();
+                        break;
+
+                    case 'getInfo':
+                        node.sendDeviceSysInfo();
+                        break;
+
+                    case 'getCloudInfo':
+                        node.sendDeviceCloudInfo();
+                        break;
+
+                    case 'getQuickInfo':
+                        node.sendDeviceQuickInfo();
+                        break;
+
+                    case 'getMeterInfo':
+                        node.sendDeviceMeterInfo();
+                        break;
+
+                    case 'clearEvents':
+                        context.set('action', msg.payload);
+                        break;
+
+                    case 'eraseStats':
+                        node.sendEraseStatsResult();
+                        break;
+
+                    default:
+                        const actions = msg.payload.split('|');
+                        actions.forEach(action => {
+                            if (EVENT_ACTIONS.indexOf(action) !== -1) enabledActions.push(action);
+                        });
+                        if (enabledActions.length > 0) context.set('action', enabledActions.join('|'));
+                        else context.set('action', '');
+                }
             }
         });
 
