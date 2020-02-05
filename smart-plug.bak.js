@@ -82,17 +82,23 @@ module.exports = function(RED) {
             let enabledActions = [];
 
             if (isPlainObject(msg.payload)) {
+                let promises = [];
+
                 if (msg.payload.hasOwnProperty('state')) {
-                    node.deviceInstance.setPowerState(msg.payload.state)
-                        .then(() => {node.sendDeviceSysInfo()})
-                        .catch(error => {return node.handleConnectionError(error)});
+                    promises.push(node.deviceInstance.setPowerState(msg.payload.state));
                 }
 
                 if (msg.payload.hasOwnProperty('brightness')) {
-                    node.deviceInstance.dimmer.setBrightness(msg.payload.brightness)
-                        .then(() => {node.sendDeviceSysInfo()})
-                        .catch(error => {return node.handleConnectionError(error)});
+                    promises.push(node.deviceInstance.dimmer.setBrightness(msg.payload.brightness));
                 }
+
+                if (msg.payload.hasOwnProperty('led')) {
+                    promises.push(node.deviceInstance.setLedState(msg.payload.led));
+                }
+
+                Promise.all(promises)
+                    .then(() => {node.sendDeviceSysInfo()})
+                    .catch(error => {return node.handleConnectionError(error)});
 
                 if (msg.payload.hasOwnProperty('events')) {
                     msg.payload.events.forEach(action => {
