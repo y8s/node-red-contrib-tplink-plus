@@ -1,14 +1,14 @@
 
-# node-red-contrib-tplink-iot
+# node-red-contrib-tplink
 TP-Link Smart Home Node-Red Nodes
 
-[![GitHub release](https://img.shields.io/github/release/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/releases) [![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink-iot.svg?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-tplink-iot) [![GitHub last commit](https://img.shields.io/github/last-commit/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/commits/master)
+[![GitHub release](https://img.shields.io/github/release/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/releases) [![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink.svg?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-tplink) [![GitHub last commit](https://img.shields.io/github/last-commit/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/commits/master)
 
-[![Node version](https://img.shields.io/node/v/node-red-contrib-tplink-iot.svg?style=flat-square)](http://nodejs.org/download/) [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot) [![CodeFactor](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-iot/badge)](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-iot)
+[![Node version](https://img.shields.io/node/v/node-red-contrib-tplink.svg?style=flat-square)](http://nodejs.org/download/) [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink)
 
-[![Github All Releases](https://img.shields.io/github/downloads/mental05/node-red-contrib-tplink-iot/total.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/releases) [![Liberapay receiving](https://img.shields.io/liberapay/receives/mental05.svg?style=flat-square)](https://liberapay.com/mental05/donate)
+[![Github All Releases](https://img.shields.io/github/downloads/caseyjhol/node-red-contrib-tplink/total.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/releases)
 
-[![npm](https://img.shields.io/npm/l/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/blob/master/LICENSE) [![GitHub contributors](https://img.shields.io/github/contributors/mental05/node-red-contrib-tplink-iot.svg?style=flat-square)](https://github.com/mental05/node-red-contrib-tplink-iot/graphs/contributors) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/Felixls/node-red-contrib-tplink-smarthome/issues)
+[![npm](https://img.shields.io/npm/l/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/blob/master/LICENSE) [![GitHub contributors](https://img.shields.io/github/contributors/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/graphs/contributors) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/Felixls/node-red-contrib-tplink-smarthome/issues)
 
 This is a collection of [Node-RED](https://nodered.org/) nodes that allow you control smart plugs and bulbs from the TP-Link smart home ecosystem.
 
@@ -21,7 +21,7 @@ Under the hood, each node uses the awesome [TP-Link Smart Home API](https://gith
 
 Run the following command in the root directory of your Node-RED install
 
-`$ npm install node-red-contrib-tplink-iot`
+`$ npm install node-red-contrib-tplink`
 
 or you can use the Palette Manager in Node-RED.
 
@@ -122,4 +122,4 @@ Nodes are made available to Node-RED in `.js` files minimized by Google's [Closu
 This repo. is *(mainly)* coded on [Node 10.3.0](https://github.com/nodejs/node/blob/master/doc/changelogs/CHANGELOG_V10.md#10.3.0) with [Node-RED 0.18.7](https://github.com/node-red/node-red/blob/master/CHANGELOG.md) on [Windows 10 Home Build 17134.81](https://support.microsoft.com/ro-ro/help/4100403/windows-10-update-kb4100403).
 Runs succesfully in a [Raspberry Pi 3 Model B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/) on standard Raspbian Stretch's [Node 0.10.29](https://nodejs.org/en/blog/release/v0.10.29/) and matching Node-RED.
 
-[![https://nodei.co/npm/node-red-contrib-tplink-iot.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/node-red-contrib-tplink-iot.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-red-contrib-tplink-iot)
+[![https://nodei.co/npm/node-red-contrib-tplink.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/node-red-contrib-tplink.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-red-contrib-tplink)
