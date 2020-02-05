@@ -85,7 +85,11 @@ module.exports = function(RED) {
                 let promises = [];
 
                 if (msg.payload.hasOwnProperty('state')) {
-                    promises.push(node.deviceInstance.setPowerState(msg.payload.state));
+                    if (msg.payload.state === 'toggle') {
+                        promises.push(node.deviceInstance.togglePowerState());
+                    } else {
+                        promises.push(node.deviceInstance.setPowerState(msg.payload.state));
+                    }
                 }
 
                 if (msg.payload.hasOwnProperty('brightness')) {
