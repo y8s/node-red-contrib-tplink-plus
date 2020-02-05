@@ -37,9 +37,15 @@ or you can use the Palette Manager in Node-RED.
 
 # Inputs
 
-> payload: string | boolean
+> payload: Object | string | boolean
 
 ## On/Off
+
+```js
+{
+	"state": true // true is "on", false is "off", "toggle" sets the opposite power state
+}
+```
 
 `true` - Turn on the device.
 
@@ -49,9 +55,23 @@ or you can use the Palette Manager in Node-RED.
 
 ## Brightness
 
+```js
+{
+	"brightness": [value 1-100]
+}
+```
+
 `brightness:[value 1-100]`
 
 *Example: Send payload as `brightness:25` to set brightness of the bulb to 25%.*
+
+## LED Status Light
+
+```js
+{
+	"led": true // true is "on", false is "off"
+}
+```
 
 ## Temperature
 
@@ -85,7 +105,13 @@ or you can use the Palette Manager in Node-RED.
 
 `getOnlineEvents` - Subscribe to online/offline events.
 
-*Multiple events can be used as a list separated with the `|` character.*
+*Multiple events can be used as a list separated with the `|` character or with an array via the `events` property.*
+
+```js
+{
+	"events": ["getMeterEvents", "getInfoEvents"]
+}
+```
 
 # For developers
 
