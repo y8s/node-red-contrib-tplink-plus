@@ -17,8 +17,8 @@
   },
   "node-red": {
     "nodes": {
-      "smart-plug": "plug/smart-plug.js",
-      "smart-bulb": "bulb/smart-bulb.js"
+      "smart-plug": "nodes/smart-plug.js",
+      "smart-bulb": "nodes/smart-bulb.js"
     }
   },
   "engines": {
@@ -38,10 +38,10 @@
     "CHANGELOG.md",
     ".npmignore",
     "package.json",
-    "bulb/smart-bulb.js",
-    "bulb/smart-bulb.html",
-    "plug/smart-plug.js",
-    "plug/smart-plug.html"
+    "nodes/smart-bulb.js",
+    "nodes/smart-bulb.html",
+    "nodes/smart-plug.js",
+    "nodes/smart-plug.html"
   ],
   "keywords": [
     "node-red",
