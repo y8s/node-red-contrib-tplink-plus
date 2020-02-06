@@ -2,7 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
-Bear in mind that the [GIT version](https://github.com/mental05/node-red-contrib-tplink-iot) *(source-code)* is always bleeding edge and may *(in most cases, will)* have changes that won't reflect in NPM/[release](https://github.com/mental05/node-red-contrib-tplink-iot/releases) version.
+Bear in mind that the [GIT version](https://github.com/caseyjhol/node-red-contrib-tplink) *(source-code)* is always bleeding edge and may *(in most cases, will)* have changes that won't reflect in NPM/[release](https://github.com/caseyjhol/node-red-contrib-tplink/releases) version.
+
+## 0.2.0
+
+### Added
+
+- HS220 brightness support
+- Support for turning off LED status light on switches
+
+### Changed
+
+- Payload can now be a JSON object to allow multiple settings to be changed at once
+- Updated tplink-smarthome-api to v2
+- Removed separate compiled files (moved files into nodes folder)
+- Use SVG for icon instead of PNG
+
+### Fixed
+
+- Fix metering messages for plugs
+
+### Breaking
+
+- npm minimum version changed to v3.0.0
+- node minimum version changed to v10.0.0
 
 ## 0.1.8 - Unreleased
 
