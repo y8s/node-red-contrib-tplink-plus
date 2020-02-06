@@ -213,11 +213,14 @@ module.exports = function(RED) {
         node.sendDeviceMeterInfo = function() {
             node.deviceInstance.emeter.getRealtime()
             .then(info => {
-                const state = context.get('state') === 'on' ? 'turned on': 'turned off';
-                const current = numeral(info.current).format('0.[000]');
-                const voltage = numeral(info.voltage).format('0.[0]');
-                const power = numeral(info.power).format('0.[00]');
-                node.status({fill:'gray',shape:'dot',text:`${state} [${power}W: ${voltage}V@${current}A]`});
+                const current = numeral(info.current_ma/1000.0).format('0.[000]');
+                const voltage = numeral(info.voltage_mv/1000.0).format('0.[0]');
+                const power = numeral(info.power_mw/1000.0).format('0.[00]');
+                if (context.get('state') === 'on') {
+                    node.status({fill:'green',shape:'dot',text:`Turned ON [${power}W: ${voltage}V@${current}A]`});
+                } else {
+                    node.status({fill:'red',shape:'dot',text:`Turned OFF [${power}W: ${voltage}V@${current}A]`});
+                }
                 const msg = {};
                 msg.payload = info;
                 msg.payload.timestamp = moment().format();
