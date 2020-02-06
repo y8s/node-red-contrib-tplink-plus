@@ -114,7 +114,7 @@
     <h3>Inputs</h3>
     <p>Control the bulb by setting it's properties.</p>
     <dl class="message-properties">
-    	<dt>msg.payload<span class="property-type">string | boolean</span></dt>
+    	<dt>msg.payload<span class="property-type">Object | string | boolean</span></dt>
       <ul>
       	<li><code>true</code> - Turn on the device.</li>
       	<li><code>false</code> - Turn off the device.</li>
@@ -141,7 +141,7 @@
     <h3>Events</h3>
     <p>Subscribe to outputs based on bulb's events. Frequency set by <code>Event poll interval</code>.</p>
     <dl class="message-properties">
-    	<dt>msg.payload<span class="property-type">string</span></dt>
+    	<dt>msg.payload<span class="property-type">Object | string</span></dt>
       <ul>
       	<li><code>getInfoEvents</code> - Subscribe to proprieties` events, such as changes in brightness, temperature, etc.</li>
       	<li><code>getPowerUpdateEvents</code> - Subscribe just to power ON/OFF events.</li>
@@ -149,7 +149,7 @@
       	<li><code>getOnlineEvents</code> - Subscribe just to online/offline events.</li>
       </ul>
     </dl>
-    <p>Multiple events can be used as a list separated with the <code>|</code> character.</p>
+    <p>Multiple events can be used as a list separated with the <code>|</code> character or with an array via the <code>events</code> property.</p>
 
     <h3>Get involved</h3>
     <p>Fork and help the node on <a href="https://github.com/caseyjhol/node-red-contrib-tplink" target="_blank" rel="external">GitHub</a>.<br>
