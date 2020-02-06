@@ -1,3 +1,5 @@
+const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]';
+
 module.exports = function(RED) {
 	'use strict';
 	const Client = require('tplink-smarthome-api').Client;
@@ -76,49 +78,104 @@ module.exports = function(RED) {
 		node.on('input', function(msg) {
 			if (!node.isClientConnected()) return node.handleConnectionError('Not reachable');
 			const EVENT_ACTIONS = ['getMeterEvents','getInfoEvents','getPowerUpdateEvents','getOnlineEvents'];
-			if(msg.payload == true||msg.payload == false) {
-				node.deviceInstance.setPowerState(msg.payload).then(() => {node.sendDeviceSysInfo()})
-				.catch(error => {return node.handleConnectionError(error)});
-			} else if (msg.payload.includes('brightness')) {
-        		const brightness = parseInt(msg.payload.split(':')[1]);
-        		node.deviceInstance.getSysInfo()
-        		.then(info => {
-          			if (info.is_dimmable === 1) {
-            			if (brightness >= 1 && brightness <= 100) {
-              				return node.deviceInstance.lighting.setLightState({brightness:brightness});
-            			} else throw "Brightness Should be between 1 and 100.";
-          			} else throw "Changing Brightness is not supported !.";
-        		})
-        		.then(() => node.sendDeviceSysInfo())
-        		.catch(error => {return node.sendError(error)});
-			} else if (msg.payload.includes('temperature')){
-        		const temperature = parseInt(msg.payload.split(':')[1]);
-        		node.deviceInstance.getSysInfo()
-        		.then(info => {
-          			if (info.is_variable_color_temp === 1) {
-            			if (temperature >= 2700 && temperature <= 6500) {
-              				return node.deviceInstance.lighting.setLightState({color_temp:temperature});
-            			} else throw "Temperature Should be between 2700 and 6500.";
-          			} else throw "Changing Temperature is not supported !.";
-        		})
-        		.then(() => node.sendDeviceSysInfo())
-        		.catch(error => {return node.sendError(error)});
-			} else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
-			else if (msg.payload === 'getCloudInfo') node.sendDeviceCloudInfo();
-			else if (msg.payload === 'getQuickInfo') node.sendDeviceQuickInfo();
-			else if (msg.payload === 'switch') node.deviceInstance.togglePowerState();
-			else if (msg.payload === 'getMeterInfo') node.sendDeviceMeterInfo();
-			else if (msg.payload === 'clearEvents') context.set('action', msg.payload);
-			else if (msg.payload === 'eraseStats') node.sendEraseStatsResult();
-			else {
-				const actions = msg.payload.split('|');
-				let enabledActions = [];
-				actions.forEach(action => {
-					if (EVENT_ACTIONS.indexOf(action) !== -1) enabledActions.push(action);
-				});
-				if (enabledActions.length > 0) context.set('action',enabledActions.join('|'));
-				else context.set('action','');
-			}
+			let enabledActions = [];
+
+            if (isPlainObject(msg.payload)) {
+                let promises = [];
+
+                if (msg.payload.hasOwnProperty('state')) {
+                    if (msg.payload.state === 'toggle') {
+                        promises.push(node.deviceInstance.togglePowerState());
+                    } else {
+                        promises.push(node.deviceInstance.setPowerState(msg.payload.state));
+                    }
+                }
+
+                if (msg.payload.hasOwnProperty('brightness')) {
+                	promises.push(
+	                	node.deviceInstance.getSysInfo()
+		                	.then(info => {
+		                		if (info.is_dimmable === 1) {
+		                			if (msg.payload.brightness >= 1 && msg.payload.brightness <= 100) {
+		                				return node.deviceInstance.lighting.setLightState({brightness: msg.payload.brightness});
+		                			} else throw "Brightness Should be between 1 and 100.";
+		                		} else throw "Changing Brightness is not supported!";
+		                	})
+		            );
+                }
+
+                if (msg.payload.hasOwnProperty('temperature')) {
+                	promises.push(
+	                	node.deviceInstance.getSysInfo()
+		                	.then(info => {
+			          			if (info.is_variable_color_temp === 1) {
+			            			if (msg.payload.temperature >= 2700 && msg.payload.temperature <= 6500) {
+			              				return node.deviceInstance.lighting.setLightState({color_temp: msg.payload.temperature});
+			            			} else throw "Temperature Should be between 2700 and 6500.";
+			          			} else throw "Changing Temperature is not supported!";
+		                	})
+		            );
+                }
+
+                Promise.all(promises)
+                    .then(() => {node.sendDeviceSysInfo()})
+                    .catch(error => {return node.handleConnectionError(error)});
+
+                if (msg.payload.hasOwnProperty('events')) {
+                    msg.payload.events.forEach(action => {
+                        if (EVENT_ACTIONS.indexOf(action) !== -1) enabledActions.push(action);
+                    });
+
+                    if (enabledActions.length > 0) {
+                        context.set('action', enabledActions.join('|'));
+                    } else {
+                        context.set('action', '');
+                    }
+                }
+            } else {
+				if(msg.payload == true||msg.payload == false) {
+					node.deviceInstance.setPowerState(msg.payload).then(() => {node.sendDeviceSysInfo()})
+					.catch(error => {return node.handleConnectionError(error)});
+				} else if (msg.payload.includes('brightness')) {
+	        		const brightness = parseInt(msg.payload.split(':')[1]);
+	        		node.deviceInstance.getSysInfo()
+	        		.then(info => {
+	          			if (info.is_dimmable === 1) {
+	            			if (brightness >= 1 && brightness <= 100) {
+	              				return node.deviceInstance.lighting.setLightState({brightness:brightness});
+	            			} else throw "Brightness Should be between 1 and 100.";
+	          			} else throw "Changing Brightness is not supported!";
+	        		})
+	        		.then(() => node.sendDeviceSysInfo())
+	        		.catch(error => {return node.sendError(error)});
+				} else if (msg.payload.includes('temperature')){
+	        		const temperature = parseInt(msg.payload.split(':')[1]);
+	        		node.deviceInstance.getSysInfo()
+	        		.then(info => {
+	          			if (info.is_variable_color_temp === 1) {
+	            			if (temperature >= 2700 && temperature <= 6500) {
+	              				return node.deviceInstance.lighting.setLightState({color_temp:temperature});
+	            			} else throw "Temperature Should be between 2700 and 6500.";
+	          			} else throw "Changing Temperature is not supported !.";
+	        		})
+	        		.then(() => node.sendDeviceSysInfo())
+	        		.catch(error => {return node.sendError(error)});
+				} else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
+				else if (msg.payload === 'getCloudInfo') node.sendDeviceCloudInfo();
+				else if (msg.payload === 'getQuickInfo') node.sendDeviceQuickInfo();
+				else if (msg.payload === 'switch') node.deviceInstance.togglePowerState();
+				else if (msg.payload === 'getMeterInfo') node.sendDeviceMeterInfo();
+				else if (msg.payload === 'clearEvents') context.set('action', msg.payload);
+				else if (msg.payload === 'eraseStats') node.sendEraseStatsResult();
+				else {
+					const actions = msg.payload.split('|');
+					actions.forEach(action => {
+						if (EVENT_ACTIONS.indexOf(action) !== -1) enabledActions.push(action);
+					});
+					if (enabledActions.length > 0) context.set('action',enabledActions.join('|'));
+					else context.set('action','');
+				}
+            }
 		});
 
 		//EVENTS
