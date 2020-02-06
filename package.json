@@ -38,10 +38,10 @@
     "CHANGELOG.md",
     ".npmignore",
     "package.json",
+    "src/smart-bulb.js",
+    "src/smart-plug.js",
     "smart-bulb.js",
     "smart-plug.js",
-    "smart-bulb.bak.js",
-    "smart-plug.bak.js",
     "smart-bulb.html",
     "smart-plug.html"
   ],
