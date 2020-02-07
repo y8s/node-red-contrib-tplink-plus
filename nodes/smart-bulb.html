@@ -60,7 +60,8 @@
           if(currentDeviceIP.length > 6) {
             $.get('smarthome/bulb', { ip: currentDeviceIP } )
             .done( function(data)	{
-              $('#node-input-name').val(data);
+              var device = JSON.parse(data);
+              $('#node-input-name').val(device.alias + ' - ' + device.model);
             })
             .fail(function(err) {
               RED.notify("Sorry. Your selected device is invalid!", "error");

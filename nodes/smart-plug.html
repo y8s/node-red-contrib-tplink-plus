@@ -54,20 +54,21 @@
 					RED.notify("Something went wrong. Please retry.", "error");
 				});
 			}
-			$(document).on('change', '#node-input-device', function() {
+      $(document).on('change', '#node-input-device', function() {
         if ($('#node-input-name').val().trim().length === 0) {
           var currentDeviceIP = $('#node-input-device').val();
           if(currentDeviceIP.length > 6) {
             $.get('smarthome/plug', { ip: currentDeviceIP } )
-            .done( function(data)	{
-              $('#node-input-name').val(data);
+            .done( function(data) {
+              var device = JSON.parse(data);
+              $('#node-input-name').val(device.alias + ' - ' + device.model);
             })
             .fail(function(err) {
               RED.notify("Sorry. Your selected device is invalid!", "error");
             });
           }
         }
-			});
+      });
 			$('#node-input-scan').click(function() {
 				if($('#node-input-device').prop("tagName") === "INPUT") {
 					searchAndSelectDevice();

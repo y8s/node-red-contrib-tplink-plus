@@ -296,7 +296,12 @@ module.exports = function(RED) {
         if (!req.query.ip) return res.status(500).send('Missing Device IP…');
         const client = new Client();
         client.getDevice({host: req.query.ip})
-        .then(device => {res.end(device.model)})
-        .catch(error => {res.sendStatus(500).send(error.message)});
+            .then(device => {
+                res.end(JSON.stringify({
+                    model: device.model,
+                    alias: device.alias
+                }))
+            })
+            .catch(error => {res.sendStatus(500).send(error.message)});
     });
 };
