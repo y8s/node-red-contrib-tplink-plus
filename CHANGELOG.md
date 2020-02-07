@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 Bear in mind that the [GIT version](https://github.com/caseyjhol/node-red-contrib-tplink) *(source-code)* is always bleeding edge and may *(in most cases, will)* have changes that won't reflect in NPM/[release](https://github.com/caseyjhol/node-red-contrib-tplink/releases) version.
 
+## 0.2.1
+
+### Changed
+
+- Resized SVG icon
+- Default name when adding a new device now includes its alias (e.g. Bedroom Light - HS220)
+
+### Fixed
+
+- Included SVG icon in package.json to ensure it is visible
+
 ## 0.2.0
 
 ### Added
