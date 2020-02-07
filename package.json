@@ -32,12 +32,12 @@
   },
   "files": [
     "examples/",
-    "icons/",
     "LICENSE",
     "README.md",
     "CHANGELOG.md",
     ".npmignore",
     "package.json",
+    "nodes/icons/",
     "nodes/smart-bulb.js",
     "nodes/smart-bulb.html",
     "nodes/smart-plug.js",
