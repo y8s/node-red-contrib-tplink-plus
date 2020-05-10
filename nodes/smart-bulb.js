@@ -74,6 +74,69 @@ module.exports = function(RED) {
 			node.eventPolling = null;
 		};
 
+		// Shared functions for setting the light state. Each take the value to set and the node and return a 
+		// promise to modify the bulb's state.
+		function setBrightness(brightness, node) {
+			return node.deviceInstance.getSysInfo()
+				.then(info => {
+					if (info.is_dimmable === 1) {
+						if (brightness >= 1 && brightness <= 100) {
+							return node.deviceInstance.lighting.setLightState({brightness: brightness});
+						} else throw "Brightness Should be between 1 and 100.";
+					} else throw "Changing Brightness is not supported!";
+				})
+				.catch(error => {return node.sendError(error)});
+		}
+
+		function setTemperature(temperature, node) {
+			return node.deviceInstance.getSysInfo()
+				.then(info => {
+					if (info.is_variable_color_temp === 1) {
+						if (temperature >= 2700 && temperature <= 6500) {
+							return node.deviceInstance.lighting.setLightState({color_temp: temperature});
+						} else throw "Temperature Should be between 2700 and 6500.";
+					} else throw "Changing Temperature is not supported!";
+				})
+				.catch(error => {return node.sendError(error)});
+		}
+
+		// Sets a new HSB (Hue, Saturation, Brightness) value for the light and returns promise to modify the 
+		// bulb's state. Note that color_temp is explicity set to 0 when a HSB is set.
+		// The hsbObject is expected to be a properly formed object with the correct keys:
+		// {
+		// 	"hue": 10,
+		// 	"saturation": 50,
+		// 	"brightness": 25
+		// }
+		function setHSB(hsbObject, node) {
+			return node.deviceInstance.getSysInfo()
+			.then(info => {
+				if (info.is_color !== 1) throw "Setting a HSB is not supported for this light!"
+
+				if (!isPlainObject(hsbObject)) throw ('HSB not properly formated');
+				if (!('hue' in hsbObject)) throw ('Key hue is missing in HSB');
+				if (!('saturation' in hsbObject)) throw ('Key saturation is missing in HSB');
+				if (!('brightness' in hsbObject)) throw ('Key brightness is missing in HSB');
+				
+				const hue = hsbObject.hue;
+				const saturation = hsbObject.saturation;
+				const brightness = hsbObject.brightness;
+				if (hue < 0 || hue > 360) throw ("Hue outside of range 0-360");
+				if (saturation < 0 || saturation > 100) throw ("Saturation outside of range 0-100");
+				if (brightness < 1 || brightness > 100) throw ("Brightness outside of range 1-100");
+				
+				return node.deviceInstance.lighting.setLightState(
+					{
+						hue: hue,
+						saturation: saturation,
+						brightness: brightness,
+						color_temp: 0
+					}
+				);
+			})
+			.catch(error => {return node.sendError(error)});
+		}
+
 		//INPUTS
 		node.on('input', function(msg) {
 			if (!node.isClientConnected()) return node.handleConnectionError('Not reachable');
@@ -92,30 +155,16 @@ module.exports = function(RED) {
                 }
 
                 if (msg.payload.hasOwnProperty('brightness')) {
-                	promises.push(
-	                	node.deviceInstance.getSysInfo()
-		                	.then(info => {
-		                		if (info.is_dimmable === 1) {
-		                			if (msg.payload.brightness >= 1 && msg.payload.brightness <= 100) {
-		                				return node.deviceInstance.lighting.setLightState({brightness: msg.payload.brightness});
-		                			} else throw "Brightness Should be between 1 and 100.";
-		                		} else throw "Changing Brightness is not supported!";
-		                	})
-		            );
+                	promises.push(setBrightness(msg.payload.brightness, node));
                 }
 
                 if (msg.payload.hasOwnProperty('temperature')) {
-                	promises.push(
-	                	node.deviceInstance.getSysInfo()
-		                	.then(info => {
-			          			if (info.is_variable_color_temp === 1) {
-			            			if (msg.payload.temperature >= 2700 && msg.payload.temperature <= 6500) {
-			              				return node.deviceInstance.lighting.setLightState({color_temp: msg.payload.temperature});
-			            			} else throw "Temperature Should be between 2700 and 6500.";
-			          			} else throw "Changing Temperature is not supported!";
-		                	})
-		            );
-                }
+                	promises.push(setTemperature(msg.payload.temperature, node));
+				}
+				
+				if (msg.payload.hasOwnProperty('hsb')) {
+                	promises.push(setHSB(msg.payload.hsb, node));
+				}
 
                 Promise.all(promises)
                     .then(() => {node.sendDeviceSysInfo()})
@@ -138,28 +187,14 @@ module.exports = function(RED) {
 					.catch(error => {return node.handleConnectionError(error)});
 				} else if (msg.payload.includes('brightness')) {
 	        		const brightness = parseInt(msg.payload.split(':')[1]);
-	        		node.deviceInstance.getSysInfo()
-	        		.then(info => {
-	          			if (info.is_dimmable === 1) {
-	            			if (brightness >= 1 && brightness <= 100) {
-	              				return node.deviceInstance.lighting.setLightState({brightness:brightness});
-	            			} else throw "Brightness Should be between 1 and 100.";
-	          			} else throw "Changing Brightness is not supported!";
-	        		})
-	        		.then(() => node.sendDeviceSysInfo())
-	        		.catch(error => {return node.sendError(error)});
+	        		setBrightness(brightness, node)
+	        			.then(() => node.sendDeviceSysInfo())
+	        			.catch(error => {return node.sendError(error)});
 				} else if (msg.payload.includes('temperature')){
 	        		const temperature = parseInt(msg.payload.split(':')[1]);
-	        		node.deviceInstance.getSysInfo()
-	        		.then(info => {
-	          			if (info.is_variable_color_temp === 1) {
-	            			if (temperature >= 2700 && temperature <= 6500) {
-	              				return node.deviceInstance.lighting.setLightState({color_temp:temperature});
-	            			} else throw "Temperature Should be between 2700 and 6500.";
-	          			} else throw "Changing Temperature is not supported !.";
-	        		})
-	        		.then(() => node.sendDeviceSysInfo())
-	        		.catch(error => {return node.sendError(error)});
+	        		setTemperature(temperature, node)
+	        			.then(() => node.sendDeviceSysInfo())
+	        			.catch(error => {return node.sendError(error)});
 				} else if (msg.payload === 'getInfo') node.sendDeviceSysInfo();
 				else if (msg.payload === 'getCloudInfo') node.sendDeviceCloudInfo();
 				else if (msg.payload === 'getQuickInfo') node.sendDeviceQuickInfo();
