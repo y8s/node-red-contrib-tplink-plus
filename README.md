@@ -127,10 +127,6 @@ Hue, Saturation, and Brightness (HSB) support for multicolor bulbs.
 
 # For developers
 
-Nodes are made available to Node-RED in `.js` files minimized by Google's [Closure Compiler](https://developers.google.com/closure/compiler/).
-
-*HOWEVER an original, up-to-date, file is included as `.bak.js` to easily modify code. Must be recompiled or copied as `.js` for code to reflect in you app.*
-
 This repo. is *(mainly)* coded on [Node 10.3.0](https://github.com/nodejs/node/blob/master/doc/changelogs/CHANGELOG_V10.md#10.3.0) with [Node-RED 0.18.7](https://github.com/node-red/node-red/blob/master/CHANGELOG.md) on [Windows 10 Home Build 17134.81](https://support.microsoft.com/ro-ro/help/4100403/windows-10-update-kb4100403).
 Runs succesfully in a [Raspberry Pi 3 Model B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/) on standard Raspbian Stretch's [Node 0.10.29](https://nodejs.org/en/blog/release/v0.10.29/) and matching Node-RED.
 
