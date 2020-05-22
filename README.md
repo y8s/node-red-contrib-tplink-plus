@@ -79,6 +79,18 @@ or you can use the Palette Manager in Node-RED.
 
 *Example: Send payload as `temperature:5000` to set temperature of the bulb to 5000k.*
 
+## Color Support for Multicolor Bulbs
+Hue, Saturation, and Brightness (HSB) support for multicolor bulbs. 
+```js
+{
+  "hsb": {
+    "hue": 240,
+    "saturation": 15,
+    "brightness": 100
+  }
+}
+```
+
 ## Commands
 
 `getInfo` - Fetch the device information.

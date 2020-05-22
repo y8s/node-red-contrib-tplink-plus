@@ -101,7 +101,7 @@
 <script type="text/x-red" data-help-name="smart-bulb">
     <p>This node controls a <b>TP-Link Smart Bulb</b>.</p>
     <p>Full support for <a href="https://www.tp-link.com/us/products/details/cat-5609_LB100.html" target="_blank" rel="external">LB100</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB200.html" target="_blank" rel="external">LB200</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB110.html" target="_blank" rel="external">LB110</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB120.html" target="_blank" rel="external">LB120</a>.</br>Some support for <a href="https://www.tp-link.com/us/products/details/cat-5609_LB130.html" target="_blank" rel="external">LB130</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB230.html" target="_blank" rel="external">LB230</a>.</p>
-
+    <p>Color picker for multicolor bulbs like LB130 and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB100.html" target="_blank" rel="external">KL130</a> supported via Hue, Saturation, Brightness (HSB) JSON object.</p>
     <h3>Parameters</h3>
     <p>Configurable properties of the node required for succesfull deploy.</p>
     <ul>
@@ -122,6 +122,7 @@
         <li><code>switch</code> - Switch the power state of the device.</li>
       	<li><code>brightness:[1-100]</code> - Sets the brightness of the bulb.</li>
         <li><code>temperature:[2700-6500]</code> - Sets the temperature of the bulb.</li>
+        <li>Color via <code>HSB</code> JSON blob, see <a href="https://github.com/caseyjhol/node-red-contrib-tplink/blob/master/README.md" target="_blank" rel="external">Github README for more info</a>.</li>
       </ul>
     </dl>
 
