@@ -37,7 +37,7 @@ or you can use the Palette Manager in Node-RED.
 
 # Inputs
 
-> payload: Object | string | boolean
+> payload: Object | string | boolean | array
 
 ## On/Off
 
@@ -51,7 +51,16 @@ or you can use the Palette Manager in Node-RED.
 
 `false` - Turn off the device.
 
-`switch` - Toggle opposite power state of the device.
+`toggle` - Toggle opposite power state of the device.
+
+## Multi-Plug On/Off
+
+```js
+{
+	"plug": 1 // whole number corresponding to "Plug" number on power strip.  Optional.
+	"state": true // true is "on", false is "off", "toggle" sets the opposite power state
+}
+```
 
 ## Brightness
 
@@ -97,31 +106,33 @@ Hue, Saturation, and Brightness (HSB) support for multicolor bulbs.
 
 `getCloudInfo` - Fetch the device information from the cloud.
 
-`getQuickInfo` - Fetch most popular proprieties, such as username, device consumption, mode, lighting state, and many more.
+`getQuickInfo` - Fetch most popular proprieties, such as username, device consumption, mode, lighting state, and many more.  Supports multi-plug.
 
-`getMeterInfo` - Fetch the current device consumption.
+`getMeterInfo` - Fetch the current device consumption.  Supports multi-plug.
 
 `clearEvents` - Unsubscribe events.
 
-`eraseStats` - Clear all the meter statistics.
+`eraseStats` - Clear all the meter statistics.  Supports multi-plug.
 
 ## Events
 
-`getMeterEvents` - Subscribe to meter information events.
+`getMeterUpdateEvents` - Subscribe to meter information events.
 
-`getInfoEvents` - Subscribe to information events.
+`getPowerEvents` - Subscribe to power on/off events.
 
-`getPowerUpdateEvents` - Subscribe to power on/off events.
+`getPowerUpdateEvents` - Subscribe to power update events.
 
 `getInUseEvents` - Subscribe to device usage events.
 
+`getInUseUpdateEvents` - Subscribe to device usage events.
+
 `getOnlineEvents` - Subscribe to online/offline events.
 
-*Multiple events can be used as a list separated with the `|` character or with an array via the `events` property.*
+*Multiple events can be used as an array via the `events` property.*
 
 ```js
 {
-	"events": ["getMeterEvents", "getInfoEvents"]
+	"events": ["getMeterUpdateEvents", "getPowerEvents"]
 }
 ```
 
