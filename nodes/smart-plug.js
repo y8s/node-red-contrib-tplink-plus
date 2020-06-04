@@ -191,7 +191,6 @@ module.exports = function (RED) {
                         msg.payload.state = value;
                         msg.payload.device = node.deviceInstance.findIndex(x => x === device);
                         msg.payload.timestamp = moment().format();
-                        msg.payload.instances = node.childs;
                         node.send(msg);
                     };
                     break;
