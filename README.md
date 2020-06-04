@@ -43,7 +43,7 @@ or you can use the Palette Manager in Node-RED.
 
 ```js
 {
-	"state": true // true is "on", false is "off", "toggle" sets the opposite power state
+	"state": true // true is "on", false is "off", "toggle" or "switch" sets the opposite power state
 }
 ```
 
@@ -53,12 +53,14 @@ or you can use the Palette Manager in Node-RED.
 
 `toggle` - Toggle opposite power state of the device.
 
+`switch` - Toggle opposite power state of the device.
+
 ## Multi-Plug On/Off
 
 ```js
 {
 	"plug": 1 // whole number corresponding to "Plug" number on power strip.  Optional.
-	"state": true // true is "on", false is "off", "toggle" sets the opposite power state
+	"state": true // true is "on", false is "off", "toggle" or "switch" sets the opposite power state
 }
 ```
 
@@ -128,12 +130,16 @@ Hue, Saturation, and Brightness (HSB) support for multicolor bulbs.
 
 `getOnlineEvents` - Subscribe to online/offline events.  Event emits on poll interval.
 
-*Multiple events can be used as an array via the `events` property.*
+*Multiple events can be used as an array via the `events` property or string separated by "|"..*
 
 ```js
 {
 	"events": ["getMeterUpdateEvents", "getPowerEvents"]
 }
+```
+or
+```js
+"getMeterUpdateEvents|getPowerEvents"
 ```
 
 # For developers

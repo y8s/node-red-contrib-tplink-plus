@@ -71,8 +71,8 @@ module.exports = function (RED) {
                             let msg_test = msg.payload.state.toUpperCase();
                             if (msg_test === 'TRUE' || msg_test === 'ON') msg.payload.state = true;
                             if (msg_test === 'FALSE' || msg_test === 'OFF') msg.payload.state = false;
-                        }
-                        if (msg.payload.state === 'toggle') {
+                        };
+                        if (msg.payload.state === 'toggle' || msg.payload.state === 'switch') {
                             promises.push(node.deviceInstance[0].togglePowerState());
                         } else {
                             promises.push(node.deviceInstance[0].setPowerState(msg.payload.state));
@@ -89,14 +89,28 @@ module.exports = function (RED) {
                     node.sendInput(node.deviceInstance[msg.payload.plug], msg.payload.state);
                 } else if (msg.payload.hasOwnProperty('state')) {
                     node.sendInput(node.deviceInstance[0], msg.payload.state);
-                }
+                };
                 if (msg.payload.hasOwnProperty('events')) {
-                    msg.payload.events.forEach(event => {
-                        node.sendInput(node.deviceInstance[0], event);
-                    });
+					if (typeof msg.payload.events === 'array' || msg.payload.events instanceof Array) {
+						msg.payload.events.forEach(event => {
+							node.sendInput(node.deviceInstance[0], event);
+						});
+					} else if (msg.payload.events.includes("|")) {
+						let msg_temp = msg.payload.events.split("|");
+						msg_temp.forEach(event => {
+							node.sendInput(node.deviceInstance[0], event);
+						});
+					} else {
+						node.sendInput(node.deviceInstance[0], msg.payload.events);
+					}
                 };
             } else if (typeof msg.payload === 'array' || msg.payload instanceof Array) {
                 msg.payload.forEach(event => {
+                    node.sendInput(node.deviceInstance[0], event);
+                });
+			} else if (msg.payload.includes("|")) {
+				let msg_temp = msg.payload.split("|");
+				msg_temp.forEach(event => {
                     node.sendInput(node.deviceInstance[0], event);
                 });
             } else {
@@ -118,6 +132,7 @@ module.exports = function (RED) {
                     device.setPowerState(input);
                     break;
                 case 'toggle':
+				case 'switch':
                     device.togglePowerState();
                     break;
                 case 'getInfo':
