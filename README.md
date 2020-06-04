@@ -116,17 +116,17 @@ Hue, Saturation, and Brightness (HSB) support for multicolor bulbs.
 
 ## Events
 
-`getMeterUpdateEvents` - Subscribe to meter information events.
+`getMeterUpdateEvents` - Subscribe to meter information events.  Event emits on event polling interval.
 
-`getPowerEvents` - Subscribe to power on/off events.
+`getPowerEvents` - Subscribe to power on/off events.  Event emits on device/plug change.
 
-`getPowerUpdateEvents` - Subscribe to power update events.
+`getPowerUpdateEvents` - Subscribe to power on/off events.  Event emits on event polling interval.
 
-`getInUseEvents` - Subscribe to device usage events.
+`getInUseEvents` - Subscribe to device usage events.  Event emits on device/plug change.
 
-`getInUseUpdateEvents` - Subscribe to device usage events.
+`getInUseUpdateEvents` - Subscribe to device usage events.  Event emits on event polling interval.
 
-`getOnlineEvents` - Subscribe to online/offline events.
+`getOnlineEvents` - Subscribe to online/offline events.  Event emits on poll interval.
 
 *Multiple events can be used as an array via the `events` property.*
 
