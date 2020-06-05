@@ -107,9 +107,8 @@ module.exports = function (RED) {
                         msg.payload.events.forEach(event => {
                             node.sendInput(device, event);
                         });
-                    } else if (msg.payload.events.includes("|")) {
-                        let msg_temp = msg.payload.events.split("|");
-                        msg_temp.forEach(event => {
+                    } else if (typeof msg.payload === 'string' && msg.payload.events.includes('|')) {
+                        msg.payload.split('|').forEach(event => {
                             node.sendInput(device, event);
                         });
                     } else {
@@ -120,7 +119,7 @@ module.exports = function (RED) {
                 msg.payload.forEach(event => {
                     node.sendInput(device, event);
                 });
-            } else if (msg.payload.includes('|')) {
+            } else if (typeof msg.payload === 'string' && msg.payload.includes('|')) {
                 msg.payload.split('|').forEach(event => {
                     node.sendInput(device, event);
                 });
