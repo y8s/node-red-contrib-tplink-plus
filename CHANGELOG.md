@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 Bear in mind that the [GIT version](https://github.com/caseyjhol/node-red-contrib-tplink) *(source-code)* is always bleeding edge and may *(in most cases, will)* have changes that won't reflect in NPM/[release](https://github.com/caseyjhol/node-red-contrib-tplink/releases) version.
 
+## 0.4.2 (2020-06-04)
+
+### Fixed
+
+- Set payload defaults to ensure same functionality as older versions
+- Fix error when passing a boolean as payload
+- Fix error catching if an error is encountered while running a command
+
 ## 0.4.1 (2020-06-04)
 
 ### Fixed
