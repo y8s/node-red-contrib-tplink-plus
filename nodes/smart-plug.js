@@ -188,6 +188,7 @@ module.exports = function (RED) {
                             msg.payload = info;
                             msg.payload.timestamp = moment().format();
                             node.send(msg);
+                            node.setPowerStatus(info);
                         }).catch(error => { return node.handleConnectionError(error, msg) });
                     break;
                 case 'getCloudInfo':
@@ -207,11 +208,21 @@ module.exports = function (RED) {
                             msg.payload.plug = node.deviceInstance.findIndex(x => x === device);
                             msg.payload.timestamp = moment().format();
                             node.send(msg);
+                            node.setPowerStatus(info.sysInfo);
                         }).catch(error => { return node.handleConnectionError(error, msg) });
                     break;
                 case 'getMeterInfo':
                     return device.emeter.getRealtime()
                         .then(info => {
+                            const current = numeral(info.current_ma/1000.0).format('0.[000]');
+                            const voltage = numeral(info.voltage_mv/1000.0).format('0.[0]');
+                            const power = numeral(info.power_mw/1000.0).format('0.[00]');
+                            if (context.get('state') === 'on') {
+                                node.status({fill:'green',shape:'dot',text:`Turned ON [${power}W: ${voltage}V@${current}A]`});
+                            } else {
+                                node.status({fill:'red',shape:'dot',text:`Turned OFF [${power}W: ${voltage}V@${current}A]`});
+                            }
+
                             let msg = {};
                             msg.payload = info;
                             msg.payload.plug = node.deviceInstance.findIndex(x => x === device);
@@ -234,7 +245,18 @@ module.exports = function (RED) {
                     if (EVENT_ACTIONS.indexOf(input) !== -1 && enabledActions.indexOf(input) === -1) enabledActions.push(input);
                     context.set('action', enabledActions);
             };
-        };
+        }
+
+        node.setPowerStatus = function (info) {
+            if (info.relay_state === 1) {
+                context.set('state','on');
+                node.status({fill:'green',shape:'dot',text:'Turned ON'});
+            } else {
+                context.set('state','off');
+                node.status({fill:'red',shape:'dot',text:'Turned OFF'});
+            }
+        }
+
         //EVENTS
         node.checkAction = function (action) {
             return context.get('action') !== undefined &&
