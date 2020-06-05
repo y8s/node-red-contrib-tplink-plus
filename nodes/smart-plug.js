@@ -4,12 +4,17 @@ module.exports = function (RED) {
     'use strict';
     const Client = require('tplink-smarthome-api').Client;
     function SmartPlugNode(config) {
+        const EVENT_ACTIONS = ['getMeterUpdateEvents', 'getPowerEvents', 'getPowerUpdateEvents', 'getInUseEvents', 'getInUseUpdateEvents', 'getOnlineEvents'];
+        const COMMANDS = ['getInfo', 'getCloudInfo', 'getQuickInfo', 'getMeterInfo', 'clearEvents', 'eraseStats'];
+
         RED.nodes.createNode(this, config);
         this.config = {
             name: config.name,
             device: config.device,
             interval: parseInt(config.interval),
-            eventInterval: parseInt(config.eventInterval)
+            eventInterval: parseInt(config.eventInterval),
+            payload: config.payload,
+            payloadType: config.payloadType,
         };
         const deviceIP = this.config.device;
         const moment = require('moment');
@@ -63,6 +68,10 @@ module.exports = function (RED) {
         //INPUTS
         node.on('input', function (msg) {
             if (!node.deviceConnected) return node.handleConnectionError('Not Reachable', msg);
+
+            const device = node.deviceInstance[0];
+            let send = false;
+
             if (isPlainObject(msg.payload)) {
                 if (msg.payload.hasOwnProperty('brightness') || msg.payload.hasOwnProperty('led')) {
                     let promises = [];
@@ -73,53 +82,90 @@ module.exports = function (RED) {
                             if (msg_test === 'FALSE' || msg_test === 'OFF') msg.payload.state = false;
                         };
                         if (msg.payload.state === 'toggle' || msg.payload.state === 'switch') {
-                            promises.push(node.deviceInstance[0].togglePowerState());
+                            promises.push(device.togglePowerState());
                         } else {
-                            promises.push(node.deviceInstance[0].setPowerState(msg.payload.state));
+                            promises.push(device.setPowerState(msg.payload.state));
                         };
                     };
                     if (msg.payload.hasOwnProperty('brightness')) {
-                        promises.push(node.deviceInstance[0].dimmer.setBrightness(msg.payload.brightness));
+                        promises.push(device.dimmer.setBrightness(msg.payload.brightness));
                     };
                     if (msg.payload.hasOwnProperty('led')) {
-                        promises.push(node.deviceInstance[0].setLedState(msg.payload.led));
+                        promises.push(device.setLedState(msg.payload.led));
                     };
-                    Promise.all(promises).catch(error => { return node.handleConnectionError(error, msg) });
+                    Promise.all(promises)
+                        .then(() => {node.sendPayload(device, msg.payload)})
+                        .catch(error => { return node.handleConnectionError(error, msg) });
                 } else if (msg.payload.hasOwnProperty('plug')) {
-                    node.sendInput(node.deviceInstance[msg.payload.plug], msg.payload.state);
+                    send = node.sendInput(node.deviceInstance[msg.payload.plug], msg.payload.state);
                 } else if (msg.payload.hasOwnProperty('state')) {
-                    node.sendInput(node.deviceInstance[0], msg.payload.state);
-                };
+                    send = node.sendInput(device, msg.payload.state);
+                }
+
                 if (msg.payload.hasOwnProperty('events')) {
-					if (typeof msg.payload.events === 'array' || msg.payload.events instanceof Array) {
-						msg.payload.events.forEach(event => {
-							node.sendInput(node.deviceInstance[0], event);
-						});
-					} else if (msg.payload.events.includes("|")) {
-						let msg_temp = msg.payload.events.split("|");
-						msg_temp.forEach(event => {
-							node.sendInput(node.deviceInstance[0], event);
-						});
-					} else {
-						node.sendInput(node.deviceInstance[0], msg.payload.events);
-					}
-                };
+                    if (typeof msg.payload.events === 'array' || msg.payload.events instanceof Array) {
+                        msg.payload.events.forEach(event => {
+                            node.sendInput(device, event);
+                        });
+                    } else if (msg.payload.events.includes("|")) {
+                        let msg_temp = msg.payload.events.split("|");
+                        msg_temp.forEach(event => {
+                            node.sendInput(device, event);
+                        });
+                    } else {
+                        node.sendInput(device, msg.payload.events);
+                    }
+                }
             } else if (typeof msg.payload === 'array' || msg.payload instanceof Array) {
                 msg.payload.forEach(event => {
-                    node.sendInput(node.deviceInstance[0], event);
+                    node.sendInput(device, event);
                 });
-			} else if (msg.payload.includes("|")) {
-				let msg_temp = msg.payload.split("|");
-				msg_temp.forEach(event => {
-                    node.sendInput(node.deviceInstance[0], event);
+            } else if (msg.payload.includes('|')) {
+                msg.payload.split('|').forEach(event => {
+                    node.sendInput(device, event);
                 });
             } else {
-                node.sendInput(node.deviceInstance[0], msg.payload);
-            };
+                send = node.sendInput(device, msg.payload);
+            }
+
+            if (send) {
+                send.then(() => {node.sendPayload(device, msg.payload)});
+            }
         });
+
+        node.sendPayload = function (device, input) {
+            let msg = {},
+                payload = node.config.payload || '';
+
+            if (node.config.payloadType === 'none' || COMMANDS.includes(input) || EVENT_ACTIONS.includes(input)) {
+                return;
+            }
+
+            switch (node.config.payloadType) {
+                case 'json':
+                    payload = JSON.parse(payload);
+                    break;
+                case 'date':
+                    payload = Date.now();
+                    break;
+                case 'bool':
+                    payload = payload === 'true';
+                    break;
+                case 'num':
+                    payload = parseInt(payload);
+                    break;
+                case 'info':
+                    node.sendInput(device, payload);
+                    return;
+            }
+
+            msg.payload = payload;
+
+            node.send(msg);
+        }
+
         //PROCESS INPUTS
         node.sendInput = function (device, input) {
-            const EVENT_ACTIONS = ['getMeterUpdateEvents', 'getPowerEvents', 'getPowerUpdateEvents', 'getInUseEvents', 'getInUseUpdateEvents', 'getOnlineEvents'];
             let enabledActions = context.get('action');
             if (typeof input === 'string' || input instanceof String) {
                 let msg_test = input.toUpperCase();
@@ -129,14 +175,14 @@ module.exports = function (RED) {
             switch (input) {
                 case true:
                 case false:
-                    device.setPowerState(input);
+                    return device.setPowerState(input);
                     break;
                 case 'toggle':
-				case 'switch':
-                    device.togglePowerState();
+                case 'switch':
+                    return device.togglePowerState();
                     break;
                 case 'getInfo':
-                    node.deviceInstance[0].getSysInfo()
+                    return device.getSysInfo()
                         .then(info => {
                             let msg = {};
                             msg.payload = info;
@@ -145,7 +191,7 @@ module.exports = function (RED) {
                         }).catch(error => { return node.handleConnectionError(error, msg) });
                     break;
                 case 'getCloudInfo':
-                    node.deviceInstance[0].cloud.getInfo()
+                    return device.cloud.getInfo()
                         .then(info => {
                             let msg = {};
                             msg.payload = info;
@@ -154,7 +200,7 @@ module.exports = function (RED) {
                         }).catch(error => { return node.handleConnectionError(error, msg) });
                     break;
                 case 'getQuickInfo':
-                    device.getInfo()
+                    return device.getInfo()
                         .then(info => {
                             let msg = {};
                             msg.payload = info;
@@ -164,7 +210,7 @@ module.exports = function (RED) {
                         }).catch(error => { return node.handleConnectionError(error, msg) });
                     break;
                 case 'getMeterInfo':
-                    device.emeter.getRealtime()
+                    return device.emeter.getRealtime()
                         .then(info => {
                             let msg = {};
                             msg.payload = info;

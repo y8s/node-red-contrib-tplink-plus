@@ -5,19 +5,25 @@
     defaults: {
       name: { value: '' },
       device: { value: '', required: true},
-			interval: {
-				value: 10000,
-				required: true,
-				validate: function(v) {
-					return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
-				}
+      interval: {
+        value: 10000,
+        required: true,
+        validate: function(v) {
+          return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
+        }
       },
       eventInterval: {
-				value: 1000,
-				required: true,
-				validate: function(v) {
-					return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
-				}
+        value: 1000,
+        required: true,
+        validate: function(v) {
+          return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
+        }
+      },
+      payload: {
+        value: 'getInfo'
+      },
+      payloadType: {
+        value: 'info'
       }
     },
     inputs: 1,
@@ -28,32 +34,52 @@
     label: function () {
       return this.name || 'smart_plug';
     },
-		oneditprepare: function()	{
-			function manualDeviceIP () {
-				var current = $('#node-input-device').val();
-				$('#node-input-device').replaceWith('<input type="text" id="node-input-device" style="width: 60%;"/>');
-				$('#node-input-device').val(current);
-			}
-			function searchAndSelectDevice() {
-				var current = $('#node-input-device').val();
-				$('#node-input-device').replaceWith('<select id="node-input-device" style="width: 60%;"></select>');
-				$('#node-input-device').append('<option selected="selected" value="null">searching…</option>');
-				$.get('smarthome/plugs')
-				.done( function(data) {
-					var devices = JSON.parse(data);
-					if(devices.length <= 0)	{
-						RED.notify("No TP-Link smart plug found.", "error");
-					}
-					$('#node-input-device').empty();
-					devices.forEach(function(ip) {
-						$('#node-input-device').append('<option value="' + ip + '">' + ip + '</option>');
-					});
-					$('#node-input-device').val(current);
-				})
-				.fail(function() {
-					RED.notify("Something went wrong. Please retry.", "error");
-				});
-			}
+    oneditprepare: function() {
+      $('#node-input-payload').typedInput({
+          types: [
+            {
+              value: 'info',
+              label: 'info',
+              icon: 'fa fa-info-circle',
+              options: ['getInfo', 'getCloudInfo', 'getQuickInfo', 'getMeterInfo']
+            },
+            {
+              value: 'none',
+              label: 'none',
+              icon: 'fa fa-ban',
+              hasValue: false
+            },
+            'str', 'num', 'bool', 'json', 'date'
+          ],
+          default: 'info',
+          typeField: '#node-input-payloadType'
+      });
+
+      function manualDeviceIP () {
+        var current = $('#node-input-device').val();
+        $('#node-input-device').replaceWith('<input type="text" id="node-input-device" style="width: 60%;"/>');
+        $('#node-input-device').val(current);
+      }
+      function searchAndSelectDevice() {
+        var current = $('#node-input-device').val();
+        $('#node-input-device').replaceWith('<select id="node-input-device" style="width: 60%;"></select>');
+        $('#node-input-device').append('<option selected="selected" value="null">searching…</option>');
+        $.get('smarthome/plugs')
+        .done( function(data) {
+          var devices = JSON.parse(data);
+          if(devices.length <= 0) {
+            RED.notify("No TP-Link smart plug found.", "error");
+          }
+          $('#node-input-device').empty();
+          devices.forEach(function(ip) {
+            $('#node-input-device').append('<option value="' + ip + '">' + ip + '</option>');
+          });
+          $('#node-input-device').val(current);
+        })
+        .fail(function() {
+          RED.notify("Something went wrong. Please retry.", "error");
+        });
+      }
       $(document).on('change', '#node-input-device', function() {
         if ($('#node-input-name').val().trim().length === 0) {
           var currentDeviceIP = $('#node-input-device').val();
@@ -69,12 +95,12 @@
           }
         }
       });
-			$('#node-input-scan').click(function() {
-				if($('#node-input-device').prop("tagName") === "INPUT") {
-					searchAndSelectDevice();
-				} else {
-					manualDeviceIP();
-				}
+      $('#node-input-scan').click(function() {
+        if($('#node-input-device').prop("tagName") === "INPUT") {
+          searchAndSelectDevice();
+        } else {
+          manualDeviceIP();
+        }
       });
     }
   });
@@ -89,14 +115,19 @@
     <input type="text" id="node-input-device" placeholder="192.168.100.1" style="width: 60%;">
     <a id="node-input-scan" class="editor-button"><i class="fa fa-search"></i></a>
   </div>
-	<div class="form-row">
-		<label for="node-input-interval"><i class="fa fa-clock-o"></i> Poll interval</label>
-		<input type="text" placeholder="7500" id="node-input-interval">
+  <div class="form-row">
+    <label for="node-input-interval"><i class="fa fa-clock-o"></i> Poll interval</label>
+    <input type="text" placeholder="7500" id="node-input-interval">
   </div>
   <div class="form-row">
-		<label for="node-input-eventInterval"><i class="fa fa-clock-o"></i> Event poll interval</label>
-		<input type="text" placeholder="2000" id="node-input-eventInterval">
-	</div>
+    <label for="node-input-eventInterval"><i class="fa fa-clock-o"></i> Event poll interval</label>
+    <input type="text" placeholder="2000" id="node-input-eventInterval">
+  </div>
+  <div class="form-row">
+    <label for="node-input-payload"><i class="fa fa-envelope"></i> <span data-i18n="node-red:common.label.payload"></span></label>
+    <input type="text" id="node-input-payload">
+    <input type="hidden" id="node-input-payloadType">
+  </div>
 </script>
 <script type="text/x-red" data-help-name="smart-plug">
     <p>This node controls a <b>TP-Link Smart Plug</b> or <b>TP-Link Smart Light Switch</b>.</p>
@@ -142,10 +173,10 @@
     <dl class="message-properties">
       <dt>msg.payload<span class="property-type">Object | string</span></dt>
       <ul>
-	  	<li><code>getPowerEvents</code> - Subscribe just to power ON/OFF events.  Emits on device/plug change.</li>
+      <li><code>getPowerEvents</code> - Subscribe just to power ON/OFF events.  Emits on device/plug change.</li>
         <li><code>getPowerUpdateEvents</code> - Subscribe just to power ON/OFF events.  Emits on event poll interval.</li>
-		<li><code>getInUseEvents</code> - Subscribe to device usage events.  Emits on device/plug change.</li>
-		<li><code>getInUseUpdateEvents</code> - Subscribe to device usage events.  Emits on event poll interval.</li>
+    <li><code>getInUseEvents</code> - Subscribe to device usage events.  Emits on device/plug change.</li>
+    <li><code>getInUseUpdateEvents</code> - Subscribe to device usage events.  Emits on event poll interval.</li>
         <li><code>getMeterUpdateEvents</code> - Subscribe to meter information events.  Emits on event poll interval.</li>
         <li><code>getOnlineEvents</code> - Subscribe just to online/offline events.  Emits on polling interval.</li>
       </ul>
