@@ -188,7 +188,7 @@ module.exports = function (RED) {
                             msg.payload.timestamp = moment().format();
                             node.send(msg);
                             node.setPowerStatus(info);
-                        }).catch(error => { return node.handleConnectionError(error, msg) });
+                        }).catch(error => { return node.handleConnectionError(error, {}) });
                     break;
                 case 'getCloudInfo':
                     return device.cloud.getInfo()
@@ -197,7 +197,7 @@ module.exports = function (RED) {
                             msg.payload = info;
                             msg.payload.timestamp = moment().format();
                             node.send(msg);
-                        }).catch(error => { return node.handleConnectionError(error, msg) });
+                        }).catch(error => { return node.handleConnectionError(error, {}) });
                     break;
                 case 'getQuickInfo':
                     return device.getInfo()
@@ -208,7 +208,7 @@ module.exports = function (RED) {
                             msg.payload.timestamp = moment().format();
                             node.send(msg);
                             node.setPowerStatus(info.sysInfo);
-                        }).catch(error => { return node.handleConnectionError(error, msg) });
+                        }).catch(error => { return node.handleConnectionError(error, {}) });
                     break;
                 case 'getMeterInfo':
                     return device.emeter.getRealtime()
@@ -227,7 +227,7 @@ module.exports = function (RED) {
                             msg.payload.plug = node.deviceInstance.findIndex(x => x === device);
                             msg.payload.timestamp = moment().format();
                             node.send(msg);
-                        }).catch(error => { return node.handleConnectionError(error, msg) });
+                        }).catch(error => { return node.handleConnectionError(error, {}) });
                     break;
                 case 'clearEvents':
                     context.set('action', []);
@@ -238,7 +238,7 @@ module.exports = function (RED) {
                             let msg = {};
                             msg.payload = result;
                             node.send(msg);
-                        }).catch(error => { return node.handleConnectionError(error, msg) });
+                        }).catch(error => { return node.handleConnectionError(error, {}) });
                     break;
                 default:
                     if (EVENT_ACTIONS.indexOf(input) !== -1 && enabledActions.indexOf(input) === -1) enabledActions.push(input);
