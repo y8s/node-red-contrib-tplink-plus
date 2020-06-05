@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 Bear in mind that the [GIT version](https://github.com/caseyjhol/node-red-contrib-tplink) *(source-code)* is always bleeding edge and may *(in most cases, will)* have changes that won't reflect in NPM/[release](https://github.com/caseyjhol/node-red-contrib-tplink/releases) version.
 
+## 0.4.0 (2020-06-04)
+
+### Added
+
+- Errors are now catchable
+- Payload property can now be set - defaults to getInfo, so it's the same as in earlier versions
+
+### Fixed
+
+- Support using `'|'` for passing events again
+- Support setting state to switch again
+
 ## 0.3.0 (2020-06-03)
 
 ### Added
