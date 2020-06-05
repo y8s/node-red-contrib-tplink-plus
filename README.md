@@ -72,10 +72,6 @@ or you can use the Palette Manager in Node-RED.
 }
 ```
 
-`brightness:[value 1-100]`
-
-*Example: Send payload as `brightness:25` to set brightness of the bulb to 25%.*
-
 ## LED Status Light
 
 ```js
