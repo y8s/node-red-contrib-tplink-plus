@@ -53,7 +53,7 @@ or you can use the Palette Manager in Node-RED.
 
 `toggle` - Toggle opposite power state of the device.
 
-`switch` - Toggle opposite power state of the device.
+`switch` - Toggle opposite power state of the device. (*deprecated*)
 
 ## Multi-Plug On/Off
 
