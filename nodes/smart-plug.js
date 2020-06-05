@@ -270,6 +270,7 @@ module.exports = function (RED) {
                         let msg = {};
                         msg.payload = {};
                         msg.payload.event = event;
+                        msg.payload.powerOn = value;
                         msg.payload.state = value;
                         msg.payload.device = node.deviceInstance.findIndex(x => x === device);
                         msg.payload.timestamp = moment().format();
@@ -281,6 +282,7 @@ module.exports = function (RED) {
                         let msg = {};
                         msg.payload = {};
                         msg.payload.event = event;
+                        msg.payload.powerOn = value;
                         msg.payload.state = value;
                         msg.payload.device = node.deviceInstance.findIndex(x => x === device);
                         msg.payload.timestamp = moment().format();
@@ -293,6 +295,7 @@ module.exports = function (RED) {
                         let msg = {};
                         msg.payload = {};
                         msg.payload.event = event;
+                        msg.payload.inUse = value;
                         msg.payload.state = value;
                         msg.payload.device = node.deviceInstance.findIndex(x => x === device);
                         msg.payload.timestamp = moment().format();
@@ -304,6 +307,7 @@ module.exports = function (RED) {
                         let msg = {};
                         msg.payload = {};
                         msg.payload.event = event;
+                        msg.payload.inUse = value;
                         msg.payload.state = value;
                         msg.payload.device = node.deviceInstance.findIndex(x => x === device);
                         msg.payload.timestamp = moment().format();
@@ -327,6 +331,7 @@ module.exports = function (RED) {
                         let msg = {};
                         msg.payload = {};
                         msg.payload.event = event;
+                        msg.payload.online = value;
                         msg.payload.state = value;
                         msg.payload.device = device;
                         msg.payload.timestamp = moment().format();
