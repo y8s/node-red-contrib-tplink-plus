@@ -13,8 +13,8 @@ module.exports = function (RED) {
             device: config.device,
             interval: parseInt(config.interval),
             eventInterval: parseInt(config.eventInterval),
-            payload: config.payload || 'getInfo',
-            payloadType: config.payloadType || 'info'
+            payload: config.payload === undefined ? 'getInfo' : config.payload,
+            payloadType: config.payloadType === undefined ? 'info' : config.payloadType
         };
         const deviceIP = this.config.device;
         const moment = require('moment');
