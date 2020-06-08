@@ -24,6 +24,9 @@
       },
       payloadType: {
         value: 'info'
+      },
+      debug: {
+        value: false
       }
     },
     inputs: 1,
@@ -127,6 +130,10 @@
     <label for="node-input-payload"><i class="fa fa-envelope"></i> <span data-i18n="node-red:common.label.payload"></span></label>
     <input type="text" id="node-input-payload">
     <input type="hidden" id="node-input-payloadType">
+  </div>
+  <div class="form-row">
+    <label for="node-input-debug"><i class="fa fa-bug"></i> <span>Debug</span></label>
+    <input type="checkbox" id="node-input-debug" style="width: auto; margin: 0;">
   </div>
 </script>
 <script type="text/x-red" data-help-name="smart-plug">

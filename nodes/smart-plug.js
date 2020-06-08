@@ -2,7 +2,8 @@ const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Ob
 
 module.exports = function (RED) {
     'use strict';
-    const Client = require('tplink-smarthome-api').Client;
+    const { Client } = require('tplink-smarthome-api');
+
     function SmartPlugNode(config) {
         const EVENT_ACTIONS = ['getInfoEvents', 'getMeterEvents', 'getPowerEvents', 'getPowerUpdateEvents', 'getInUseEvents', 'getInUseUpdateEvents', 'getOnlineEvents'];
         const COMMANDS = ['getInfo', 'getCloudInfo', 'getQuickInfo', 'getMeterInfo', 'clearEvents', 'eraseStats'];
@@ -14,7 +15,8 @@ module.exports = function (RED) {
             interval: parseInt(config.interval),
             eventInterval: parseInt(config.eventInterval),
             payload: config.payload === undefined ? 'getInfo' : config.payload,
-            payloadType: config.payloadType === undefined ? 'info' : config.payloadType
+            payloadType: config.payloadType === undefined ? 'info' : config.payloadType,
+            debug: config.debug
         };
         const deviceIP = this.config.device;
         const moment = require('moment');
@@ -39,6 +41,7 @@ module.exports = function (RED) {
                 client.on('device-online', () => { node.sendEvent('device-online', deviceIP, 'online') });
                 client.on('device-offline', () => { node.sendEvent('device-offline', deviceIP, 'offline') });
                 if (device.children) {
+                    if (node.config.debug) node.warn(device.children);
                     node.deviceInstance = await Promise.all(
                         Array.from(device.children.keys(), async childId => {
                             const plug = await client.getDevice({ host: deviceIP, childId });
@@ -71,6 +74,8 @@ module.exports = function (RED) {
 
             const device = node.deviceInstance[0];
             let send = false;
+
+            if (node.config.debug) node.warn(node.deviceInstance);
 
             if (isPlainObject(msg.payload)) {
                 if (msg.payload.hasOwnProperty('brightness') || msg.payload.hasOwnProperty('led')) {
@@ -288,15 +293,12 @@ module.exports = function (RED) {
                         msg.payload.timestamp = moment().format();
                         node.send(msg);
                     };
-					//getInfoEvents (placed here to take advantage of polling interval)
-					if (node.checkAction('getInfoEvents')) {
-						node.deviceInstance[0].getSysInfo()
-                        .then(info => {
-                            let msg = {};
-                            msg.payload = info;
-                            msg.payload.timestamp = moment().format();
-                            node.send(msg);
-                        }).catch(error => { return node.handleConnectionError(error, {}) });
+                    //getInfoEvents (placed here to take advantage of polling interval)
+                    if (node.checkAction('getInfoEvents')) {
+                        let msg = {};
+                        msg.payload = device.sysInfo;
+                        msg.payload.timestamp = moment().format();
+                        node.send(msg);
                     };
                     break;
                 case 'in-use':
