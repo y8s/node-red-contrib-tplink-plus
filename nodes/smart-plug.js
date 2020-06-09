@@ -20,6 +20,7 @@ module.exports = function (RED) {
         };
         const deviceIP = this.config.device;
         const moment = require('moment');
+        const numeral = require('numeral');
         const context = this.context();
         context.set('action', []);
         const node = this;
