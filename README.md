@@ -86,6 +86,11 @@ or you can use the Palette Manager in Node-RED.
 
 ## Temperature
 
+```js
+{
+	"temperature": [value 2700-6500]
+}
+```
 `temperature:[value 2700-6500]`
 
 *Example: Send payload as `temperature:5000` to set temperature of the bulb to 5000k.*
