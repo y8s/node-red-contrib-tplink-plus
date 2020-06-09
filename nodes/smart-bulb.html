@@ -45,8 +45,8 @@
 						RED.notify("No TP-Link smart bulb found.", "error");
 					}
 					$('#node-input-device').empty();
-					devices.forEach(function(ip) {
-						$('#node-input-device').append('<option value="' + ip + '">' + ip + '</option>');
+					devices.forEach(function(device) {
+						$('#node-input-device').append('<option value="' + device.host + '">' + device.alias + ' (' + device.host + ')</option>');
 					});
 					$('#node-input-device').val(current);
 				})

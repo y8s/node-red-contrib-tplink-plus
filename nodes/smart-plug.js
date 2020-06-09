@@ -384,7 +384,12 @@ module.exports = function (RED) {
             const client = new Client();
             let discoveryTimeout = 10000;
             let devices = [];
-            client.on('device-new', device => { devices.push(device.host) });
+            client.on('device-new', device => {
+                devices.push({
+                    host: device.host,
+                    alias: device.alias
+                });
+            });
             client.startDiscovery({ deviceTypes: ['plug'] });
             setTimeout(() => {
                 client.stopDiscovery();
