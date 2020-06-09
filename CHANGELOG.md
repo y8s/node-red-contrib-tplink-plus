@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 Bear in mind that the [GIT version](https://github.com/caseyjhol/node-red-contrib-tplink) *(source-code)* is always bleeding edge and may *(in most cases, will)* have changes that won't reflect in NPM/[release](https://github.com/caseyjhol/node-red-contrib-tplink/releases) version.
 
+## 0.4.3 (2020-06-08)
+
+### Fixed
+
+- getMeterInfo no longer throws an error
+- getInfoEvents works again (broken in v0.3.0)
+- getMeterEvents works again (broken in v0.3.0)
+
+### Added
+
+- Debug property to help debug issues with devices
+
 ## 0.4.2 (2020-06-05)
 
 ### Fixed
