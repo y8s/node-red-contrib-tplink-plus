@@ -148,6 +148,7 @@
       <li><code>Poll interval</code> - Interval that is used to poll availability of devices <em>(Min. 500ms / Recommended 5000-10000ms.)</em></li>
       <li><code>Event poll interval</code> - Interval that is used to poll active devices for events <em>(Min. 500ms / Recommended 1000ms-3000ms.)</em></li>
       <li><code>Payload</code> - The output payload. Types are <code>info</code>, <code>none</code>, <code>string</code>, <code>number</code>, <code>boolean</code>, <code>JSON</code>, and <code>timestamp</code>. Default type is <code>info</code> with a value of <code>getInfo</code>. If set to <code>info</code>, the selected payload command will be fired after completion, and the payload set accordingly. Payload is ignored if the node input is a command or an event.</li>
+      <li><code>Debug</code> - If enabled, will output device information to the flow editor debug tab.</li>
     </ul>
     <p>If any "TCP Timeout" console errors occur raise the timeout limit to at least 15s <em>(15000ms)</em> in your Node-RED's <b>settings.js</b>.</p>
 

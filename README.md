@@ -37,6 +37,8 @@ or you can use the Palette Manager in Node-RED.
 
 `Payload` - The output payload. Types are `info`, `none`, `string`, `number`, `boolean`, `JSON`, and `timestamp`. Default type is `info` with a value of `getInfo`. If set to `info`, the selected payload command will be fired after completion, and the payload set accordingly. Payload is ignored if the node input is a command or an event.
 
+`Debug` - If enabled, will output device information to the flow editor debug tab.
+
 # Inputs
 
 > payload: Object | string | boolean | array
