@@ -54,7 +54,7 @@ module.exports = function (RED) {
                     node.monitorEvents(device);
                 };
                 node.deviceInstance.unshift(device);
-            })().catch(() => { return node.handleConnectionError() });
+            })().catch((error) => node.handleConnectionError(error, {}));
             node.deviceConnected = true;
             node.status({ fill: 'green', shape: 'dot', text: 'Connected' });
             client.startDiscovery({ broadcast: deviceIP, discoveryInterval: node.config.interval, offlineTolerance: 1, breakoutChildren: false });
