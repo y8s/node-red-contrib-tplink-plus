@@ -8,7 +8,8 @@
     "Barney Rubble <felixls.pic@gmail.com> (http://acloudhub.info/resume/)",
     "Raj Amal <raj.amalw@gmail.com> (https://www.learn2crack.com)",
     "juggledad (https://github.com/juggledad)",
-    "Casey Holzer (https://github.com/caseyjhol)"
+    "Casey Holzer (https://github.com/caseyjhol)",
+    "hufftheweevil (https://github.com/hufftheweevil)"
   ],
   "license": "MIT",
   "repository": {
@@ -17,8 +18,7 @@
   },
   "node-red": {
     "nodes": {
-      "smart-plug": "nodes/smart-plug.js",
-      "smart-bulb": "nodes/smart-bulb.js"
+      "tplink": "nodes/tplink.js"
     }
   },
   "engines": {
@@ -38,10 +38,8 @@
     ".npmignore",
     "package.json",
     "nodes/icons/",
-    "nodes/smart-bulb.js",
-    "nodes/smart-bulb.html",
-    "nodes/smart-plug.js",
-    "nodes/smart-plug.html"
+    "nodes/tplink.js",
+    "nodes/tplink.html"
   ],
   "keywords": [
     "node-red",

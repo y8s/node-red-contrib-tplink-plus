@@ -1,5 +1,5 @@
-
 # node-red-contrib-tplink
+
 TP-Link Smart Home Node-Red Nodes
 
 [![GitHub release](https://img.shields.io/github/release/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/releases) [![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink.svg?style=flat-square)](https://www.npmjs.com/package/node-red-contrib-tplink) [![GitHub last commit](https://img.shields.io/github/last-commit/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/commits/master)
@@ -31,9 +31,9 @@ or you can use the Palette Manager in Node-RED.
 
 `Device IP` - Type in the Device IP address manually or press the button to retrieve all locally available plug devices
 
-`Poll interval` - Interval that is used to poll availability of devices *(>500ms / Recommended 5000-10000ms)*
+`Poll interval` - Interval that is used to poll availability of devices _(>500ms / Recommended 5000-10000ms)_
 
-`Event poll interval` - Interval that is used to poll active devices for events *(>500ms / Recommended 1000-3000ms)*
+`Event poll interval` - Interval that is used to poll active devices for events _(>500ms / Recommended 1000-3000ms)_
 
 `Payload` - The output payload. Types are `info`, `none`, `string`, `number`, `boolean`, `JSON`, and `timestamp`. Default type is `info` with a value of `getInfo`. If set to `info`, the selected payload command will be fired after completion, and the payload set accordingly. Payload is ignored if the node input is a command or an event.
 
@@ -57,16 +57,7 @@ or you can use the Palette Manager in Node-RED.
 
 `toggle` - Toggle opposite power state of the device.
 
-`switch` - Toggle opposite power state of the device. (*deprecated*)
-
-## Multi-Plug On/Off
-
-```js
-{
-	"plug": 1 // whole number corresponding to "Plug" number on power strip.  Optional.
-	"state": true // true is "on", false is "off", "toggle" or "switch" sets the opposite power state
-}
-```
+`switch` - Toggle opposite power state of the device. (_deprecated_)
 
 ## Brightness
 
@@ -91,12 +82,15 @@ or you can use the Palette Manager in Node-RED.
 	"temperature": [value 2700-6500]
 }
 ```
+
 `temperature:[value 2700-6500]`
 
-*Example: Send payload as `temperature:5000` to set temperature of the bulb to 5000k.*
+_Example: Send payload as `temperature:5000` to set temperature of the bulb to 5000k._
 
 ## Color Support for Multicolor Bulbs
-Hue, Saturation, and Brightness (HSB) support for multicolor bulbs. 
+
+Hue, Saturation, and Brightness (HSB) support for multicolor bulbs.
+
 ```js
 {
   "hsb": {
@@ -113,45 +107,47 @@ Hue, Saturation, and Brightness (HSB) support for multicolor bulbs.
 
 `getCloudInfo` - Fetch the device information from the cloud.
 
-`getQuickInfo` - Fetch most popular proprieties, such as username, device consumption, mode, lighting state, and many more.  Supports multi-plug.
+`getQuickInfo` - Fetch most popular proprieties, such as username, device consumption, mode, lighting state, and many more. Supports multi-plug.
 
-`getMeterInfo` - Fetch the current device consumption.  Supports multi-plug.
+`getMeterInfo` - Fetch the current device consumption. Supports multi-plug.
 
 `clearEvents` - Unsubscribe events.
 
-`eraseStats` - Clear all the meter statistics.  Supports multi-plug.
+`eraseStats` - Clear all the meter statistics. Supports multi-plug.
 
 ## Events
 
-`getMeterEvents` - Subscribe to meter information events.  Event emits on event polling interval.
+`getMeterEvents` - Subscribe to meter information events. Event emits on event polling interval.
 
 `getInfoEvents` - Subscribe to information events.
 
-`getPowerEvents` - Subscribe to power on/off events.  Event emits on device/plug change.
+`getPowerEvents` - Subscribe to power on/off events. Event emits on device/plug change.
 
-`getPowerUpdateEvents` - Subscribe to power on/off events.  Event emits on event polling interval.
+`getPowerUpdateEvents` - Subscribe to power on/off events. Event emits on event polling interval.
 
-`getInUseEvents` - Subscribe to device usage events.  Event emits on device/plug change.
+`getInUseEvents` - Subscribe to device usage events. Event emits on device/plug change.
 
-`getInUseUpdateEvents` - Subscribe to device usage events.  Event emits on event polling interval.
+`getInUseUpdateEvents` - Subscribe to device usage events. Event emits on event polling interval.
 
-`getOnlineEvents` - Subscribe to online/offline events.  Event emits on poll interval.
+`getOnlineEvents` - Subscribe to online/offline events. Event emits on poll interval.
 
-*Multiple events can be used as an array via the `events` property or string separated by "|"..*
+_Multiple events can be used as an array via the `events` property or string separated by "|".._
 
 ```js
 {
 	"events": ["getMeterUpdateEvents", "getPowerEvents"]
 }
 ```
+
 or
+
 ```js
-"getMeterUpdateEvents|getPowerEvents"
+'getMeterUpdateEvents|getPowerEvents'
 ```
 
 # For developers
 
-This repo. is *(mainly)* coded on [Node 10.3.0](https://github.com/nodejs/node/blob/master/doc/changelogs/CHANGELOG_V10.md#10.3.0) with [Node-RED 0.18.7](https://github.com/node-red/node-red/blob/master/CHANGELOG.md) on [Windows 10 Home Build 17134.81](https://support.microsoft.com/ro-ro/help/4100403/windows-10-update-kb4100403).
+This repo. is _(mainly)_ coded on [Node 10.3.0](https://github.com/nodejs/node/blob/master/doc/changelogs/CHANGELOG_V10.md#10.3.0) with [Node-RED 0.18.7](https://github.com/node-red/node-red/blob/master/CHANGELOG.md) on [Windows 10 Home Build 17134.81](https://support.microsoft.com/ro-ro/help/4100403/windows-10-update-kb4100403).
 Runs succesfully in a [Raspberry Pi 3 Model B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/) on standard Raspbian Stretch's [Node 0.10.29](https://nodejs.org/en/blog/release/v0.10.29/) and matching Node-RED.
 
 [![https://nodei.co/npm/node-red-contrib-tplink.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/node-red-contrib-tplink.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-red-contrib-tplink)
