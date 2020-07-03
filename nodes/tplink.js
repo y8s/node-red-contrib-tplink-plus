@@ -18,9 +18,10 @@ module.exports = function (RED) {
 
     // Only one client instance used per node
     const client = new Client({
+      logLevel: config.debug ? 'debug' : 'warn',
       defaultSendOptions: {
         transport: 'udp',
-        timeout: 60000,
+        timeout: 30000,
         useSharedSocket: true,
         sharedSocketTimeout: 0
       }
@@ -34,27 +35,47 @@ module.exports = function (RED) {
     // Devices array will hold the device object returned
     // by client.getDevice(). Each device has all methods
     // of the underlying TP-Link API, including an event bus.
-    node.devices = []
+    node.devices = new Map()
 
     // For each new device in this node, a connection is established
     // using the client instance for this node. The returned
     // device object is added to the dictionary of devices, keyed
     // by the shortId (format <IP> or <IP>/<PLUG>). Once added,
     // event proxies are setup, and then polling begins.
-    node.connectDevice = async function (id) {
-      let [deviceIP, plug] = id.split('/')
+    node.connectDevice = async function (id, msg) {
+      if (node.devices.has(id)) return node.devices.get(id)
 
+      node.devices.set(id, {
+        placeholder: true,
+        queue: [msg]
+      })
+
+      let [deviceIP, plug] = id.split('/')
       let options = { host: deviceIP }
       if (plug) options.childId = plug
 
-      const device = await client.getDevice(options)
-      device.getInfo()
+      try {
+        let device = await client.getDevice(options)
+        await device.getInfo()
+        node.setupDevice(id, device)
+        return device
+      } catch (err) {
+        node.error(`Error connecting to device ${id}: ${err}`)
+        return
+      }
+    }
+
+    node.setupDevice = function (id, device) {
       device.shortId = id
       device.events = []
-      node.devices[id] = device
+      device.online = true
 
       node.setupEventProxies(device)
       if (node.config.eventInterval) device.startPolling(node.config.eventInterval)
+
+      let queue = node.devices.has(id) && node.devices.queue
+      node.devices.set(id, device)
+      if (queue) queue.forEach(msg => node.processInput(msg, device))
 
       node.updateStatus()
 
@@ -66,6 +87,7 @@ module.exports = function (RED) {
     // event will be triggered. Note: No message will output if
     // the OnlineEvents have not been started (see below).
     // This is essentially a "isAlive polling" check for all devices.
+    // This also catches any devices that failed to connect initially.
     if (node.config.interval)
       client.startDiscovery({
         discoveryInterval: node.config.interval,
@@ -73,18 +95,27 @@ module.exports = function (RED) {
         breakoutChildren: false
       })
 
-    const emitOnlineEvents = state => device => {
-      let host = device.host
+    const emitOnlineEvents = state => dev => {
+      let host = dev.host
       let ids = [host]
-      if (device.children) device.children.forEach((x, childId) => ids.push(`${host}/${+childId.slice(-2)}`))
+      if (dev.children && !dev.childId)
+        dev.children.forEach((x, childId) => ids.push(`${host}/${+childId.slice(-2)}`))
+
       ids.forEach(id => {
-        if (node.devices[id]) {
-          node.devices[id].online = state
-          node.devices[id].emit('OnlineEvents', { online: state, state })
-          node.updateStatus()
+        if (node.devices.has(id)) {
+          let device = node.devices.get(id)
+          if (device.placeholder && state == true) {
+            // Probably initial connection to device failed. Now
+            // that we have the device, set it up, then proceed.
+            device = node.setupDevice(id, dev)
+          }
+          device.online = state
+          device.emit('OnlineEvents', { online: state, state })
         }
       })
+      node.updateStatus()
     }
+    client.on('device-new', emitOnlineEvents(true))
     client.on('device-online', emitOnlineEvents(true))
     client.on('device-offline', emitOnlineEvents(false))
 
@@ -99,15 +130,15 @@ module.exports = function (RED) {
 
       if (!shortId) return
 
-      if (!node.devices[shortId]) {
-        node
-          .connectDevice(shortId)
-          .then(device => node.processInput(msg, device))
-          .catch(error => {
-            if (node.config.debug) node.error(`Error connecting to device ${shortId}: ${error}`)
-          })
+      if (node.devices.has(shortId)) {
+        let device = node.devices.get(shortId)
+        if (device.placeholder) {
+          device.queue.push(msg)
+        } else {
+          node.processInput(msg, device)
+        }
       } else {
-        node.processInput(msg, node.devices[shortId])
+        node.connectDevice(shortId, msg)
       }
     })
 
@@ -307,7 +338,7 @@ module.exports = function (RED) {
 
       device.on('emeter-realtime-update', emeter => {
         device.emit('MeterEvents', { emeter })
-        if (Object.keys(node.devices).length == 1) node.updateStatus()
+        if (node.devices.size == 1) node.updateStatus()
       })
 
       device.on('polling-error', error => {
@@ -358,10 +389,15 @@ module.exports = function (RED) {
     // device, and only the number of devices is used. Number of
     // offline device is always shown if more than 0.
     node.updateStatus = function () {
-      let deviceArray = Object.values(node.devices)
-      let numDevices = deviceArray.length
-      let numOnline = deviceArray.map(dev => dev.online).length
-      let numOffline = numDevices - numOnline
+      let onlineDevice
+      let numOnline = 0
+      let numOffline = 0
+      node.devices.forEach(dev => {
+        if (dev.online) {
+          numOnline++
+          onlineDevice = dev
+        } else numOffline++
+      })
 
       let status = {
         fill: 'green',
@@ -373,7 +409,7 @@ module.exports = function (RED) {
         status.shape = 'ring'
         status.text = 'No devices connected'
       } else if (numOnline === 1) {
-        let device = deviceArray[0]
+        let device = onlineDevice
         let state = device.relayState ? 'ON' : 'OFF'
         if (device.supportsEmeter) {
           let emeter = device.emeter.realtime
@@ -394,25 +430,13 @@ module.exports = function (RED) {
       node.status(status)
     }
 
-    node.stopAll = function () {
-      node.status({ fill: 'red', shape: 'ring', text: 'All Disconnected' })
-      node.devices.forEach(device => {
-        device.startPolling()
-        device.closeConnection()
-      })
-      node.client.stopDiscovery()
+    if (this.config.deviceId) {
+      // If configured with a device, initiate connection
+      node.connectDevice(this.config.deviceId)
+    } else {
+      // Otherwise, initialize status (with no devices)
+      node.updateStatus()
     }
-
-    // Cleanup when node destroyed
-    node.on('close', function () {
-      node.stopAll()
-    })
-
-    // If configured with a device, initiate connection
-    if (this.config.deviceId)
-      node
-        .connectDevice(this.config.deviceId)
-        .catch(error => node.error(`Error connecting to device ${shortId}: ${error}`))
 
     // Helpers
     function validateNumber(propName, value, min, max) {
@@ -423,6 +447,15 @@ module.exports = function (RED) {
         return false
       }
     }
+
+    // Cleanup when node destroyed
+    node.on('close', function () {
+      node.devices.forEach(device => {
+        device.stopPolling()
+        device.closeConnection()
+      })
+      node.client.stopDiscovery()
+    })
   }
 
   //Make available as node

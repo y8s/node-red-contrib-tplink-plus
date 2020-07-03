@@ -13,11 +13,12 @@ TP-Link Smart Home Node-Red Nodes
 This is a collection of [Node-RED](https://nodered.org/) nodes that allow you control smart plugs and bulbs from the TP-Link smart home ecosystem.
 
 This is a fork of so inspiring [node-red-contrib-tplink-smarthome
+
 ](https://github.com/Felixls/node-red-contrib-tplink-smarthome) with added functionality.
 
 Under the hood, each node uses the awesome [TP-Link Smart Home API](https://github.com/plasticrake/tplink-smarthome-api).
 
-# Installation
+## Installation
 
 Run the following command in the root directory of your Node-RED install
 
@@ -25,129 +26,83 @@ Run the following command in the root directory of your Node-RED install
 
 or you can use the Palette Manager in Node-RED.
 
-# Parameters
+## Parameters
 
 `Name` - Type in the name of the host manually or keep the default device name
 
-`Device IP` - Type in the Device IP address manually or press the button to retrieve all locally available plug devices
+`Device IP` - Type in the Device IP address manually or press the button to retrieve all locally available plug devices. To specify a plug in a multi-plug device, append a `/` followed by the plug number (zero-indexed). Use is optional. Alternatively, or additionally, an input message can include `msg.topic` with a device IP (and optional plug number). Examples: `192.168.1.101` or `192.168.1.101/3`
 
-`Poll interval` - Interval that is used to poll availability of devices _(>500ms / Recommended 5000-10000ms)_
+`Connection poll interval` - Interval that is used to poll availability of devices _(>500ms / Recommended 5000-10000ms)_. Set to `0` to disable availability checks (in which case, `OnlineEvents` will not trigger, even if started).
 
-`Event poll interval` - Interval that is used to poll active devices for events _(>500ms / Recommended 1000-3000ms)_
+`Event poll interval` - Interval that is used to poll active devices for events _(>500ms / Recommended 1000-3000ms)_. Set to `0` to disable event polling (in which case, all events except OnlineEvents will not trigger, even if started).
 
-`Payload` - The output payload. Types are `info`, `none`, `string`, `number`, `boolean`, `JSON`, and `timestamp`. Default type is `info` with a value of `getInfo`. If set to `info`, the selected payload command will be fired after completion, and the payload set accordingly. Payload is ignored if the node input is a command or an event.
+`Output payload` - Types are `info`, `none`, `string`, `number`, `boolean`, `JSON`, and `timestamp`. Default type is `info` with a value of `getInfo`. If set to `info`, the selected payload command will be fired after completion, and the payload set accordingly. Output payload is ignored if the node input is a command or an event, in which case see below for more information
 
 `Debug` - If enabled, will output device information to the flow editor debug tab.
 
-# Inputs
+## Inputs
 
-> payload: Object | string | boolean | array
+Send in a message to control, command, or start/stop events.
 
-## On/Off
+- `topic` - Optional. The device IP (and optional plug). Any message without a topic will use the device configured via the parameters. If no topic is included, and no device is configured, the message will be ignored.
 
-```js
-{
-	"state": true // true is "on", false is "off", "toggle" or "switch" sets the opposite power state
-}
-```
+- `payload` - Required. Either a **control**, **command**, or **event action**. See below for details of each.
 
-`true` - Turn on the device.
+### Controls
 
-`false` - Turn off the device.
+Control a device by setting its properties.
 
-`toggle` - Toggle opposite power state of the device.
+> string | Object
 
-`switch` - Toggle opposite power state of the device. (_deprecated_)
+- `true` | `on` - Turn on the device
+- `false` | `off` - Turn off the device
+- `toggle` - Switch the power state of the device.
+- Or as an object, all properties optional:
+  _ `state: true` | `on` | `false` | `off` - Set device on or off
+  _ `brightness: [1-100]` - Set brightness, if supported
+  _ `temperature: [2700-6500]` - Set brightness (in kelvin), if supported
+  _ `hsb: {hue, saturation, brightness}` - Set the color, if supported \* `led: true` | `false` - Turn the LED on or off, if supported
 
-## Brightness
+### Commands
 
-```js
-{
-	"brightness": [value 1-100]
-}
-```
+> string
 
-## LED Status Light
+- `getInfo` - Fetch the device information.
+- `getCloudInfo` - Fetch the device information from the cloud.
+- `getQuickInfo` - Fetch most popular proprieties, such as username, device consumption, mode, lighting state, and many more. Supports multi-plug.
+- `getMeterInfo` - Fetch the current device consumption. Supports multi-plug.
+- `eraseStats` - Clear all the meter statistics. Supports multi-plug.
 
-```js
-{
-	"led": true // true is "on", false is "off"
-}
-```
+### Events
 
-## Temperature
+> string | array | Object
 
-```js
-{
-	"temperature": [value 2700-6500]
-}
-```
+- `startMeterEvents`/`stopMeterEvents` - Subscribe to meter information events. Event emits on event polling interval.
+- `startInfoEvents`/`stopInfoEvents` - Subscribe to information events. Event emits on event polling interval.
+- `startPowerEvents`/`stopPowerEvents` - Subscribe to power on/off events. Event emits on device/plug change.
+- `startPowerUpdateEvents`/`stopPowerUpdateEvents` - Subscribe to power on/off events. Event emits on event polling interval.
+- `startInUseEvents`/`stopInUseEvents` - Subscribe to device usage events. Event emits on device/plug change.
+- `startInUseUpdateEvents`/`stopInUseUpdateEvents` - Subscribe to device usage events. Event emits on event polling interval.
+- `startOnlineEvents`/`stopOnlineEvents` - Subscribe to online/offline events. Event emits on poll interval.
+- `stopAllEvents` - Unsubscribe all events.
 
-`temperature:[value 2700-6500]`
-
-_Example: Send payload as `temperature:5000` to set temperature of the bulb to 5000k._
-
-## Color Support for Multicolor Bulbs
-
-Hue, Saturation, and Brightness (HSB) support for multicolor bulbs.
+_Multiple event actions can be sent at once, either as an array or as a string separated by "|". Alternatively, an array or string can be sent in the `events` property of an object._
+Examples:
 
 ```js
-{
-  "hsb": {
-    "hue": 240,
-    "saturation": 15,
-    "brightness": 100
-  }
-}
-```
-
-## Commands
-
-`getInfo` - Fetch the device information.
-
-`getCloudInfo` - Fetch the device information from the cloud.
-
-`getQuickInfo` - Fetch most popular proprieties, such as username, device consumption, mode, lighting state, and many more. Supports multi-plug.
-
-`getMeterInfo` - Fetch the current device consumption. Supports multi-plug.
-
-`clearEvents` - Unsubscribe events.
-
-`eraseStats` - Clear all the meter statistics. Supports multi-plug.
-
-## Events
-
-`getMeterEvents` - Subscribe to meter information events. Event emits on event polling interval.
-
-`getInfoEvents` - Subscribe to information events.
-
-`getPowerEvents` - Subscribe to power on/off events. Event emits on device/plug change.
-
-`getPowerUpdateEvents` - Subscribe to power on/off events. Event emits on event polling interval.
-
-`getInUseEvents` - Subscribe to device usage events. Event emits on device/plug change.
-
-`getInUseUpdateEvents` - Subscribe to device usage events. Event emits on event polling interval.
-
-`getOnlineEvents` - Subscribe to online/offline events. Event emits on poll interval.
-
-_Multiple events can be used as an array via the `events` property or string separated by "|".._
-
-```js
-{
-	"events": ["getMeterUpdateEvents", "getPowerEvents"]
-}
+;['startMeterUpdateEvents', 'stopPowerEvents']
 ```
 
 or
 
 ```js
-'getMeterUpdateEvents|getPowerEvents'
+'startMeterUpdateEvents|stopPowerEvents'
 ```
 
-# For developers
+## For developers
 
 This repo. is _(mainly)_ coded on [Node 10.3.0](https://github.com/nodejs/node/blob/master/doc/changelogs/CHANGELOG_V10.md#10.3.0) with [Node-RED 0.18.7](https://github.com/node-red/node-red/blob/master/CHANGELOG.md) on [Windows 10 Home Build 17134.81](https://support.microsoft.com/ro-ro/help/4100403/windows-10-update-kb4100403).
+
 Runs succesfully in a [Raspberry Pi 3 Model B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/) on standard Raspbian Stretch's [Node 0.10.29](https://nodejs.org/en/blog/release/v0.10.29/) and matching Node-RED.
 
 [![https://nodei.co/npm/node-red-contrib-tplink.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/node-red-contrib-tplink.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-red-contrib-tplink)
