@@ -42,13 +42,16 @@ module.exports = function (RED) {
     // device object is added to the dictionary of devices, keyed
     // by the shortId (format <IP> or <IP>/<PLUG>). Once added,
     // event proxies are setup, and then polling begins.
-    node.connectDevice = async function (id, msg) {
-      if (node.devices.has(id)) return node.devices.get(id)
-
-      node.devices.set(id, {
-        placeholder: true,
-        queue: [msg]
-      })
+    node.connectDevice = async function (id) {
+      if (!node.devices.has(id)) {
+        console.log('Device needs to be added before connection request')
+      }
+      let shellDevice = node.devices.get(id)
+      if (!shellDevice.placeholder) {
+        console.log('ATTEMPTING TO CONNECT TO DEVICE THAT IS ALREDY CONNECTED?', { id, shellDevice })
+        return shellDevice
+      }
+      shellDevice.connecting = true
 
       let [deviceIP, plug] = id.split('/')
       let options = { host: deviceIP }
@@ -60,6 +63,7 @@ module.exports = function (RED) {
         node.setupDevice(id, device)
         return device
       } catch (err) {
+        shellDevice.connecting = false
         node.error(`Error connecting to device ${id}: ${err}`)
         return
       }
@@ -70,10 +74,12 @@ module.exports = function (RED) {
       device.events = []
       device.online = true
 
-      node.setupEventProxies(device)
-      if (node.config.eventInterval) device.startPolling(node.config.eventInterval)
+      if (node.config.eventInterval) {
+        node.setupEventProxies(device)
+        device.startPolling(node.config.eventInterval)
+      }
 
-      let queue = node.devices.has(id) && node.devices.queue
+      let queue = node.devices.has(id) && node.devices.get(id).queue
       node.devices.set(id, device)
       if (queue) queue.forEach(msg => node.processInput(msg, device))
 
@@ -104,13 +110,15 @@ module.exports = function (RED) {
       ids.forEach(id => {
         if (node.devices.has(id)) {
           let device = node.devices.get(id)
-          if (device.placeholder && state == true) {
+          if (device.placeholder && !device.connecting && state == true) {
             // Probably initial connection to device failed. Now
             // that we have the device, set it up, then proceed.
             device = node.setupDevice(id, dev)
           }
-          device.online = state
-          device.emit('OnlineEvents', { online: state, state })
+          if (!device.placeholder) {
+            device.online = state
+            device.emit('OnlineEvents', { online: state, state })
+          }
         }
       })
       node.updateStatus()
@@ -138,7 +146,11 @@ module.exports = function (RED) {
           node.processInput(msg, device)
         }
       } else {
-        node.connectDevice(shortId, msg)
+        node.devices.set(shortId, {
+          placeholder: true,
+          queue: [msg]
+        })
+        node.connectDevice(shortId)
       }
     })
 
@@ -432,7 +444,11 @@ module.exports = function (RED) {
 
     if (this.config.deviceId) {
       // If configured with a device, initiate connection
-      node.connectDevice(this.config.deviceId)
+      node.devices.set(this.config.deviceId, {
+        placeholder: true,
+        queue: []
+      })
+      node.newDevice(this.config.deviceId)
     } else {
       // Otherwise, initialize status (with no devices)
       node.updateStatus()
@@ -450,7 +466,11 @@ module.exports = function (RED) {
 
     // Cleanup when node destroyed
     node.on('close', function () {
-      node.devices.forEach(device => {
+      // NOTE: We reference node.client.devices here, just in case
+      // there were devices initialized on this client that did not
+      // make it into the node.devices map. This ensures no memory
+      // leaking in case of bugs/errors.
+      node.client.devices.forEach(device => {
         device.stopPolling()
         device.closeConnection()
       })
