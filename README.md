@@ -54,14 +54,14 @@ Control a device by setting its properties.
 
 > string | Object
 
-- `true` | `on` - Turn on the device
-- `false` | `off` - Turn off the device
-- `toggle` - Switch the power state of the device.
+-  `true` | `on` - Turn on the device
+-  `false` | `off` - Turn off the device
+-  `toggle` - Switch the power state of the device.
 - Or as an object, all properties optional:
-  _ `state: true` | `on` | `false` | `off` - Set device on or off
-  _ `brightness: [1-100]` - Set brightness, if supported
-  _ `temperature: [2700-6500]` - Set brightness (in kelvin), if supported
-  _ `hsb: {hue, saturation, brightness}` - Set the color, if supported \* `led: true` | `false` - Turn the LED on or off, if supported
+	-  `state: true` | `on` | `false` | `off` - Set device on or off
+	-  `brightness: [1-100]` - Set brightness, if supported
+	-  `temperature: [2700-6500]` - Set brightness (in kelvin), if supported
+	-  `hsb: {hue, saturation, brightness}` - Set the color, if supported \*  `led: true` | `false` - Turn the LED on or off, if supported
 
 ### Commands
 
@@ -90,13 +90,13 @@ _Multiple event actions can be sent at once, either as an array or as a string s
 Examples:
 
 ```js
-;['startMeterUpdateEvents', 'stopPowerEvents']
+['startMeterUpdateEvents', 'stopPowerEvents']
 ```
 
 or
 
 ```js
-'startMeterUpdateEvents|stopPowerEvents'
+{ events: 'startMeterUpdateEvents|stopPowerEvents' }
 ```
 
 ## For developers
