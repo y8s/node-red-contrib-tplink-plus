@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-tplink",
-  "version": "0.4.3",
+  "version": "1.0.0-alpha.0",
   "description": "A collection of Node-RED nodes for TP-Link smart-home devices.",
   "homepage": "https://github.com/caseyjhol/node-red-contrib-tplink",
   "author": "Dragoiu Robert <dragoiu.robert@gmail.com> (https://facebook.com/dopepixels)",
@@ -8,7 +8,8 @@
     "Barney Rubble <felixls.pic@gmail.com> (http://acloudhub.info/resume/)",
     "Raj Amal <raj.amalw@gmail.com> (https://www.learn2crack.com)",
     "juggledad (https://github.com/juggledad)",
-    "Casey Holzer (https://github.com/caseyjhol)"
+    "Casey Holzer (https://github.com/caseyjhol)",
+    "hufftheweevil (https://github.com/hufftheweevil)"
   ],
   "license": "MIT",
   "repository": {
@@ -17,8 +18,7 @@
   },
   "node-red": {
     "nodes": {
-      "smart-plug": "nodes/smart-plug.js",
-      "smart-bulb": "nodes/smart-bulb.js"
+      "tplink": "nodes/tplink.js"
     }
   },
   "engines": {
@@ -28,7 +28,7 @@
   "dependencies": {
     "moment": "^2.20.1",
     "numeral": "^2.0.6",
-    "tplink-smarthome-api": "^2.0.0"
+    "tplink-smarthome-api": "^3.0.0-beta"
   },
   "files": [
     "examples/",
@@ -38,10 +38,8 @@
     ".npmignore",
     "package.json",
     "nodes/icons/",
-    "nodes/smart-bulb.js",
-    "nodes/smart-bulb.html",
-    "nodes/smart-plug.js",
-    "nodes/smart-plug.html"
+    "nodes/tplink.js",
+    "nodes/tplink.html"
   ],
   "keywords": [
     "node-red",
