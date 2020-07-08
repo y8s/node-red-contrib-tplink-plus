@@ -484,7 +484,7 @@ module.exports = function (RED) {
   }
 
   //Make available as node
-  RED.nodes.registerType('tplink', TpLinkNode)
+  RED.nodes.registerType('kasa', TpLinkNode)
 
   RED.httpAdmin.get('/smarthome/devices', (req, res) => {
     try {

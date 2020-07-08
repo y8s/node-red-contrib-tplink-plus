@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  RED.nodes.registerType('tplink', {
+  RED.nodes.registerType('kasa', {
     category: 'devices',
     color: '#4acbd6',
     defaults: {
@@ -35,9 +35,9 @@
     outputs: 1,
     icon: 'icon.svg',
     align: 'right',
-    paletteLabel: 'tplink',
+    paletteLabel: 'kasa',
     label: function () {
-      return this.name || 'tplink'
+      return this.name || 'kasa'
     },
     oneditprepare: function () {
       $('#node-input-payload').typedInput({
@@ -118,7 +118,7 @@
     }
   })
 </script>
-<script type="text/x-red" data-template-name="tplink">
+<script type="text/x-red" data-template-name="kasa">
   <div class="form-row">
     <label for="node-input-name"><i class="icon-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name">
@@ -146,7 +146,7 @@
     <input type="checkbox" id="node-input-debug" style="width: auto; margin: 0;">
   </div>
 </script>
-<script type="text/x-red" data-help-name="tplink">
+<script type="text/x-red" data-help-name="kasa">
   <p>This node controls a <b>TP-Link Smart Plug</b>, <b>TP-Link Smart Light Switch</b>, or <b>TP-Link Smart Bulb</b>.</p>
   <p>Full support for <a href="https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wifi-plug-hs100" target="_blank" rel="external">HS100</a>, <a href="https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wifi-plug-lite-hs103p2" target="_blank" rel="external">HS103</a>, <a href="https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wifi-plug-mini" target="_blank" rel="external">HS105</a>, <a href="https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-plug-2-outlets-hs107" target="_blank" rel="external">HS107</a>, HS110, <a href="https://www.kasasmart.com/us/products/smart-switches/kasa-smart-wi-fi-light-switch-hs200" target="_blank" rel="external">HS200</a>, <a href="https://www.kasasmart.com/us/products/smart-switches/kasa-smart-wi-fi-light-switch-3-way-kit-hs210kit" target="_blank" rel="external">HS210</a>, <a href="https://www.kasasmart.com/us/products/smart-switches/kasa-smart-wi-fi-light-switch-dimmer-hs220" target="_blank" rel="external">HS220</a>, <a href="https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300" target="_blank" rel="external">HS300</a>, <a href="https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-kp303" target="_blank" rel="external">KP303</a>, <a href="https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wifi-outdoor-plug-kp400" target="_blank" rel="external">KP400</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB100.html" target="_blank" rel="external">LB100</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB200.html" target="_blank" rel="external">LB200</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB110.html" target="_blank" rel="external">LB110</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB120.html" target="_blank" rel="external">LB120</a>.</br>Some support for <a href="https://www.tp-link.com/us/products/details/cat-5609_LB130.html" target="_blank" rel="external">LB130</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB230.html" target="_blank" rel="external">LB230</a>.</p>
 
