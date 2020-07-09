@@ -8,7 +8,7 @@ TP-Link Smart Home Node-Red Nodes
 
 [![Github All Releases](https://img.shields.io/github/downloads/caseyjhol/node-red-contrib-tplink/total.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/releases)
 
-[![npm](https://img.shields.io/npm/l/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/blob/master/LICENSE) [![GitHub contributors](https://img.shields.io/github/contributors/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/graphs/contributors) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/Felixls/node-red-contrib-tplink-smarthome/issues)
+[![npm](https://img.shields.io/npm/l/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/blob/master/LICENSE) [![GitHub contributors](https://img.shields.io/github/contributors/caseyjhol/node-red-contrib-tplink.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/graphs/contributors) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/caseyjhol/node-red-contrib-tplink/issues)
 
 This is a [Node-RED](https://nodered.org/) node that allows you to control smart plugs, switches, and bulbs from the TP-Link Kasa Smart ecosystem.
 
