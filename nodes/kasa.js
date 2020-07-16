@@ -219,7 +219,7 @@ module.exports = function (RED) {
         }
 
         // payload.led
-        if (input.hasOwnProperty('led') && device.hasOwnProperty('setLedState')) {
+        if (input.hasOwnProperty('led') && device.deviceType === 'plug') {
           promises.push(device.setLedState(input.led))
         }
 
