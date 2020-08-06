@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 Bear in mind that the [GIT version](https://github.com/caseyjhol/node-red-contrib-tplink) *(source-code)* is always bleeding edge and may *(in most cases, will)* have changes that won't reflect in NPM/[release](https://github.com/caseyjhol/node-red-contrib-tplink/releases) version.
 
+## 1.0.0-alpha.1 (2020-08-06)
+
+### Changed
+
+- Only log error if debug option is enabled
+
+### Fixed
+
+- Fix memory leak caused by failure to properly close
+- Use deviceType to determine if setLedState can be used ([#33])
+
+[#33]: https://github.com/caseyjhol/node-red-contrib-tplink/issues/33
+
 ## 1.0.0-alpha.0 (2020-07-08)
 
 ### Changed
