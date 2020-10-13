@@ -87,13 +87,13 @@ _Multiple event actions can be sent at once, either as an array or as a string s
 Examples:
 
 ```js
-['startMeterUpdateEvents', 'stopPowerEvents']
+['startMeterEvents', 'stopPowerEvents']
 ```
 
 or
 
 ```js
-{ events: 'startMeterUpdateEvents|stopPowerEvents' }
+{ events: 'startMeterEvents|stopPowerEvents' }
 ```
 
 ## For developers
