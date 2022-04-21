@@ -1,8 +1,8 @@
 {
-  "name": "node-red-contrib-tplink",
+  "name": "node-red-contrib-tplink-plus",
   "version": "1.0.0",
   "description": "A collection of Node-RED nodes for TP-Link smart-home devices.",
-  "homepage": "https://github.com/caseyjhol/node-red-contrib-tplink",
+  "homepage": "https://github.com/y8s/node-red-contrib-tplink-plus",
   "author": "Dragoiu Robert <dragoiu.robert@gmail.com> (https://facebook.com/dopepixels)",
   "contributors": [
     "Barney Rubble <felixls.pic@gmail.com> (http://acloudhub.info/resume/)",
@@ -14,7 +14,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/caseyjhol/node-red-contrib-tplink.git"
+    "url": "https://github.com/y8s/node-red-contrib-tplink-plus.git"
   },
   "node-red": {
     "nodes": {
@@ -69,6 +69,6 @@
     "smartbulb"
   ],
   "bugs": {
-    "url": "https://github.com/caseyjhol/node-red-contrib-tplink/issues"
+    "url": "https://github.com/y8s/node-red-contrib-tplink-plus/issues"
   }
 }
