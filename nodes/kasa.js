@@ -283,7 +283,7 @@ module.exports = function (RED) {
           msg.payload = Date.now()
           break
         case 'bool':
-          msg.payload = inputPayload === 'true'
+          msg.payload = inputPayload === true
           break
         case 'num':
           msg.payload = parseInt(inputPayload)
