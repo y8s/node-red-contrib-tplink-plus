@@ -27,6 +27,9 @@
       payloadType: {
         value: 'info'
       },
+      passthru: {
+        value: false
+      },
       debug: {
         value: false
       }
@@ -142,6 +145,9 @@
     <input type="hidden" id="node-input-payloadType">
   </div>
   <div class="form-row">
+    <label for="node-input-passthru"><i class="fa fa-thru"></i> <span>Passthru Input Commands</span></label>
+    <input type="checkbox" id="node-input-passthru" style="width: auto; margin: 0;">
+  <div class="form-row">
     <label for="node-input-debug"><i class="fa fa-bug"></i> <span>Debug</span></label>
     <input type="checkbox" id="node-input-debug" style="width: auto; margin: 0;">
   </div>
@@ -157,6 +163,7 @@
     <li><code>Connection poll interval</code> - Interval that is used to poll availability of devices <em>(Min. 500ms / Recommended 10000ms-60000ms.)</em> Set to <code>0</code> to disable availability checks (in which case, OnlineEvents will not trigger, even if started).</li>
     <li><code>Event poll interval</code> - Interval that is used to poll active devices for events <em>(Min. 500ms / Recommended 1000ms-15000ms.)</em> Set to <code>0</code> to disable event polling (in which case, all events except OnlineEvents will not trigger, even if started).</li>
     <li><code>Output payload</code> - Types are <code>info</code>, <code>none</code>, <code>string</code>, <code>number</code>, <code>boolean</code>, <code>JSON</code>, and <code>timestamp</code>. Default type is <code>info</code> with a value of <code>getInfo</code>. If set to <code>info</code>, the selected payload command will be fired after completion, and the payload set accordingly. Output payload is ignored if the node input is a command or an event, in which case see below for more information.</li>
+    <li><code>Passthru Input Command</code> - If enabled, will pass node inputs through to output when triggered. Commands from Kasa app or device are always passed.</li>
     <li><code>Debug</code> - If enabled, will output device information to the flow editor debug tab.</li>
   </ul>
   <p>If any "TCP Timeout" console errors occur raise the timeout limit to at least 15s <em>(15000ms)</em> in your Node-RED's <b>settings.js</b>.</p>
@@ -172,7 +179,7 @@
     </dl>
 
   <h3>Controls</h3>
-  <p>Control a device by setting its properties.</p>
+  <p>Control a device by setting its properties. Check <code>Passthru Input Command</code> to pass control commands to the node output.</p>
   <dl class="message-properties">
     <dt>msg.payload<span class="property-type">Object | string | boolean | array</span></dt>
     <ul>
