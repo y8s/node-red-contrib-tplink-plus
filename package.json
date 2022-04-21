@@ -18,7 +18,7 @@
   },
   "node-red": {
     "nodes": {
-      "kasa": "nodes/kasa.js"
+      "kasa": "nodes/kasa-plus.js"
     }
   },
   "engines": {
@@ -38,8 +38,8 @@
     ".npmignore",
     "package.json",
     "nodes/icons/",
-    "nodes/kasa.js",
-    "nodes/kasa.html"
+    "nodes/kasa-plus.js",
+    "nodes/kasa-plus.html"
   ],
   "keywords": [
     "node-red",
