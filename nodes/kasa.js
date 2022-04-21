@@ -13,6 +13,7 @@ module.exports = function (RED) {
       eventInterval: parseInt(config.eventInterval),
       payload: config.payload === undefined ? 'getInfo' : config.payload,
       payloadType: config.payloadType === undefined ? 'info' : config.payloadType,
+      passthru: config.passthru,
       debug: config.debug
     }
 
@@ -139,7 +140,7 @@ module.exports = function (RED) {
     // yet, setup connection first then processing message.
     node.on('input', function (msg) {
       let shortId = msg.topic || node.config.deviceId
-
+      
       if (!shortId) return
 
       if (node.devices.has(shortId)) {
@@ -272,6 +273,8 @@ module.exports = function (RED) {
     // Device state was already updated (ie the device was
     // controlled). Here we send an output message based
     // on the node configuration.
+    // If passthru is disabled, we don't send a message to the output.
+    
     node.sendControlResult = function (device, inputPayload) {
       let msg = {}
 
@@ -292,9 +295,10 @@ module.exports = function (RED) {
           node.handleCommand(device, node.config.payload)
           return
       }
-
-      msg.topic = device.shortId
-      node.send(msg)
+      if (node.config.passthru === false) { 
+        msg.topic = device.shortId
+        node.send(msg)
+      }
     }
 
     // Special commands handled here. Also, any input strings that
