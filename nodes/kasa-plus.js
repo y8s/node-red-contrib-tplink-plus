@@ -295,7 +295,7 @@ module.exports = function (RED) {
           node.handleCommand(device, node.config.payload)
           return
       }
-      if (node.config.passthru === false) { 
+      if (node.config.passthru) { 
         msg.topic = device.shortId
         node.send(msg)
       }
