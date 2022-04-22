@@ -404,14 +404,16 @@ module.exports = function (RED) {
     // parameters in node.setupEventProxies) and outputs a formatted message.
     node.makeEventHandler = function (device, event) {
       if (event == 'InfoEvents')
-        return () =>
+        return () => {
+          node.error(`makeEventHandler InfoEvents`),
           node.send({
             topic: device.shortId,
             payload: device.sysInfo
-            node.error('makeEventHandler fired InfoEvents')  
           })
+        }
 
-      return passedProps =>
+      return passedProps => {
+        node.error(`makeEventHandler passedProps`)
         node.send({
           topic: device.shortId,
           payload: {
@@ -419,8 +421,8 @@ module.exports = function (RED) {
             timestamp: moment().format(),
             ...passedProps
           }
-          node.error('makeEventHandler fired passedProps')  
         })
+      }
     }
 
     // The node status is different, depending on how many devices
