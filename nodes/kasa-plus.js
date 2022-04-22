@@ -1,4 +1,5 @@
 const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
+var nodeinput
 
 module.exports = function (RED) {
   'use strict'
@@ -171,6 +172,7 @@ module.exports = function (RED) {
         node.warn(`Processing input for device ${device.shortId}: ${JSON.stringify(msg)}`)
 
       let input = msg.payload
+      nodeinput = true
       let promises = []
 
       // OBJECT
@@ -295,11 +297,21 @@ module.exports = function (RED) {
           node.handleCommand(device, node.config.payload)
           return
       }
-      if (node.config.passthru) { 
+
+      node.error(`passthru value is: `+node.config.passthru+`; node input is: `+nodeinput)
+
+      if (!nodeinput || node.config.passthru) {
         msg.topic = device.shortId
         node.send(msg)
+        node.error(`sending output message!`)
+      } else {
+        node.error(`NOT sending output message.`)
       }
     }
+
+
+    
+    
 
     // Special commands handled here. Also, any input strings that
     // didn't match anything in the processor get sent here and will
@@ -336,6 +348,7 @@ module.exports = function (RED) {
             }
           })
         )
+        node.error('handleCommand fired promise')  
         .catch(node.error)
     }
 
@@ -368,6 +381,7 @@ module.exports = function (RED) {
       device.on('polling-error', error => {
         if (node.config.debug) node.error(`Polling error for ${device.shortId}: ${error}`)
       })
+      node.error('setupEventProxies fired')
     }
 
     // Based on the input command, a node-based event is turned on or off as requested.
@@ -394,6 +408,7 @@ module.exports = function (RED) {
           node.send({
             topic: device.shortId,
             payload: device.sysInfo
+            node.error('makeEventHandler fired InfoEvents')  
           })
 
       return passedProps =>
@@ -404,6 +419,7 @@ module.exports = function (RED) {
             timestamp: moment().format(),
             ...passedProps
           }
+          node.error('makeEventHandler fired passedProps')  
         })
     }
 
