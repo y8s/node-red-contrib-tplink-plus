@@ -1,3 +1,5 @@
+// did this even go
+
 const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
 var nodeinput
 
@@ -337,27 +339,19 @@ module.exports = function (RED) {
         default:
           return node.error(`Invalid input: ${cmd}`)
       }
-<<<<<<< HEAD
     
-=======
->>>>>>> parent of 2699a6e (Update kasa-plus.js)
 
       promise
-        .then(info => {
-          node.error('handleCommand fired promise')  
+        .then(info =>
           node.send({
             topic: device.shortId,
             payload: {
               ...info,
-              timestamp: moment().format()
+              timestamp: moment().format(),
+              y8s: "handleCommand section"
             }
           })
         )
-<<<<<<< HEAD
-      }
-=======
-        node.error('handleCommand fired promise')  
->>>>>>> parent of 2699a6e (Update kasa-plus.js)
         .catch(node.error)
     }
 
