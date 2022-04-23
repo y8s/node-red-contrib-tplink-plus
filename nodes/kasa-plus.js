@@ -359,7 +359,6 @@ module.exports = function (RED) {
     // that have been turned on (via node.handleEventAction) will end up sending
     // an output on the node.
     node.setupEventProxies = function (device) {
-      node.error("setupEVentProxies section")
       let powerPrefix = device.deviceType == 'bulb' ? 'lightstate' : 'power'
       device.on(powerPrefix + '-on', () =>
         device.emit('PowerEvents', { powerOn: true, state: true })
