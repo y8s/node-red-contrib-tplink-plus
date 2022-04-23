@@ -1,7 +1,7 @@
 // did this even go
 
 const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
-var nodeinput
+var nodeinput = false
 
 module.exports = function (RED) {
   'use strict'
@@ -300,14 +300,14 @@ module.exports = function (RED) {
           return
       }
 
-      node.error(`passthru value is: `+node.config.passthru+`; node input is: `+nodeinput)
+//      node.error(`passthru value is: `+node.config.passthru+`; node input is: `+nodeinput)
 
       if (!nodeinput || node.config.passthru) {
         msg.topic = device.shortId
         node.send(msg)
-        node.error(`sending output message!`)
-      } else {
-        node.error(`NOT sending output message.`)
+//        node.error(`sending output message!`)
+//      } else {
+//        node.error(`NOT sending output message.`)
       }
     }
 
@@ -415,16 +415,18 @@ module.exports = function (RED) {
           })
         }
 
-      return passedProps => {
-        node.error(`makeEventHandler passedProps`)
-        node.send({
-          topic: device.shortId,
-          payload: {
-            event: event,
-            timestamp: moment().format(),
-            ...passedProps
-          }
-        })
+      if (!nodeinput) {
+        return passedProps => {
+          node.error(`makeEventHandler passedProps`)
+          node.send({
+            topic: device.shortId,
+            payload: {
+              event: event,
+              timestamp: moment().format(),
+              ...passedProps
+            }
+          })
+        }
       }
     }
 
