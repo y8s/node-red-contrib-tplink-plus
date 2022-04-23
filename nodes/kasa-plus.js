@@ -1,5 +1,5 @@
 const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
-var nodeinput = false
+var nodeinput
 
 module.exports = function (RED) {
   'use strict'
@@ -14,6 +14,7 @@ module.exports = function (RED) {
       eventInterval: parseInt(config.eventInterval),
       payload: config.payload === undefined ? 'getInfo' : config.payload,
       payloadType: config.payloadType === undefined ? 'info' : config.payloadType,
+      passthru: config.passthru,
       debug: config.debug
     }
 
@@ -297,8 +298,8 @@ module.exports = function (RED) {
       }
 
     if (!nodeinput || node.config.passthru) {
-        msg.topic = device.shortId
-    node.send(msg)
+      msg.topic = device.shortId
+      node.send(msg)
     }
 }
 
