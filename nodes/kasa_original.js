@@ -1,5 +1,4 @@
 const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
-var nodeinput = false
 
 module.exports = function (RED) {
   'use strict'
@@ -171,7 +170,6 @@ module.exports = function (RED) {
         node.warn(`Processing input for device ${device.shortId}: ${JSON.stringify(msg)}`)
 
       let input = msg.payload
-      nodeinput = true
       let promises = []
 
       // OBJECT
@@ -274,7 +272,6 @@ module.exports = function (RED) {
     // Device state was already updated (ie the device was
     // controlled). Here we send an output message based
     // on the node configuration.
-    // If passthru is disabled, we don't send a message to the output.
     node.sendControlResult = function (device, inputPayload) {
       let msg = {}
 
@@ -286,7 +283,7 @@ module.exports = function (RED) {
           msg.payload = Date.now()
           break
         case 'bool':
-          msg.payload = inputPayload === true
+          msg.payload = inputPayload === 'true'
           break
         case 'num':
           msg.payload = parseInt(inputPayload)
@@ -296,11 +293,9 @@ module.exports = function (RED) {
           return
       }
 
-    if (!nodeinput || node.config.passthru) {
-        msg.topic = device.shortId
-    node.send(msg)
+      msg.topic = device.shortId
+      node.send(msg)
     }
-}
 
     // Special commands handled here. Also, any input strings that
     // didn't match anything in the processor get sent here and will
