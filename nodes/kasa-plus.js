@@ -141,7 +141,7 @@ module.exports = function (RED) {
     // yet, setup connection first then processing message.
     node.on('input', function (msg) {
       let shortId = msg.topic || node.config.deviceId
-      
+      node.error(`node on input`)
       if (!shortId) return
 
       if (node.devices.has(shortId)) {
@@ -337,6 +337,8 @@ module.exports = function (RED) {
         default:
           return node.error(`Invalid input: ${cmd}`)
       }
+    
+    node.error('handleCommand fired promise')  
 
       promise
         .then(info =>
@@ -348,7 +350,6 @@ module.exports = function (RED) {
             }
           })
         )
-        node.error('handleCommand fired promise')  
         .catch(node.error)
     }
 
@@ -408,7 +409,8 @@ module.exports = function (RED) {
           node.error(`makeEventHandler InfoEvents`),
           node.send({
             topic: device.shortId,
-            payload: device.sysInfo
+            payload: device.sysInfo,
+            y8s: "InfoEvents"
           })
         }
 
@@ -419,6 +421,7 @@ module.exports = function (RED) {
           payload: {
             event: event,
             timestamp: moment().format(),
+            y8s: "passedProps",
             ...passedProps
           }
         })
