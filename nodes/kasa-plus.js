@@ -141,7 +141,7 @@ module.exports = function (RED) {
     // yet, setup connection first then processing message.
     node.on('input', function (msg) {
       let shortId = msg.topic || node.config.deviceId
-      node.error(`node on input`)
+      
       if (!shortId) return
 
       if (node.devices.has(shortId)) {
@@ -337,7 +337,10 @@ module.exports = function (RED) {
         default:
           return node.error(`Invalid input: ${cmd}`)
       }
+<<<<<<< HEAD
     
+=======
+>>>>>>> parent of 2699a6e (Update kasa-plus.js)
 
       promise
         .then(info => {
@@ -350,7 +353,11 @@ module.exports = function (RED) {
             }
           })
         )
+<<<<<<< HEAD
       }
+=======
+        node.error('handleCommand fired promise')  
+>>>>>>> parent of 2699a6e (Update kasa-plus.js)
         .catch(node.error)
     }
 
@@ -410,8 +417,7 @@ module.exports = function (RED) {
           node.error(`makeEventHandler InfoEvents`),
           node.send({
             topic: device.shortId,
-            payload: device.sysInfo,
-            y8s: "InfoEvents"
+            payload: device.sysInfo
           })
         }
 
@@ -422,7 +428,6 @@ module.exports = function (RED) {
           payload: {
             event: event,
             timestamp: moment().format(),
-            y8s: "passedProps",
             ...passedProps
           }
         })
