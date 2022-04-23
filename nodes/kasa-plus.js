@@ -391,14 +391,12 @@ module.exports = function (RED) {
     // that takes the passed properties from the underlying event (based on the
     // parameters in node.setupEventProxies) and outputs a formatted message.
     node.makeEventHandler = function (device, event) {
-      if (!nodeinput) {
-        if (event == 'InfoEvents')
+          if (event == 'InfoEvents' && !nodeinput)
           return () =>
             node.send({
               topic: device.shortId,
               payload: device.sysInfo
             })
-
       
           return passedProps =>
           node.send({
@@ -409,7 +407,6 @@ module.exports = function (RED) {
               ...passedProps
             }
           })
-      }
     }
 
     // The node status is different, depending on how many devices
