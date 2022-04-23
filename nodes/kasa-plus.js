@@ -338,10 +338,10 @@ module.exports = function (RED) {
           return node.error(`Invalid input: ${cmd}`)
       }
     
-    node.error('handleCommand fired promise')  
 
       promise
-        .then(info =>
+        .then(info => {
+          node.error('handleCommand fired promise')  
           node.send({
             topic: device.shortId,
             payload: {
@@ -350,6 +350,7 @@ module.exports = function (RED) {
             }
           })
         )
+      }
         .catch(node.error)
     }
 
