@@ -347,6 +347,7 @@ module.exports = function (RED) {
     // an output on the node.
     node.setupEventProxies = function (device) {
       let powerPrefix = device.deviceType == 'bulb' ? 'lightstate' : 'power'
+      nodeinput = false
       device.on(powerPrefix + '-on', () =>
         device.emit('PowerEvents', { powerOn: true, state: true })
       )
@@ -392,13 +393,15 @@ module.exports = function (RED) {
     // parameters in node.setupEventProxies) and outputs a formatted message.
     node.makeEventHandler = function (device, event) {
           if (event == 'InfoEvents' && !nodeinput)
-          return () =>
+          return () => {
             node.send({
               topic: device.shortId,
               payload: device.sysInfo
             })
+            node.error("info events")
+          }
       
-          return passedProps =>
+          return passedProps => {
           node.send({
             topic: device.shortId,
             payload: {
@@ -407,6 +410,8 @@ module.exports = function (RED) {
               ...passedProps
             }
           })
+          node.error("infoevents2")
+        }
     }
 
     // The node status is different, depending on how many devices
