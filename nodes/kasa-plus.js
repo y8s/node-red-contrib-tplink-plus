@@ -1,5 +1,5 @@
 const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
-var nodeinput
+var internalinput
 
 module.exports = function (RED) {
   'use strict'
@@ -172,7 +172,7 @@ module.exports = function (RED) {
         node.warn(`Processing input for device ${device.shortId}: ${JSON.stringify(msg)}`)
 
       let input = msg.payload
-      nodeinput = true
+      internalinput = false
       let promises = []
 
       // OBJECT
@@ -297,7 +297,7 @@ module.exports = function (RED) {
           return
       }
 
-    if (!nodeinput || node.config.passthru) {
+    if (internalinput || node.config.passthru) {
       msg.topic = device.shortId
       node.send(msg)
     }
@@ -347,7 +347,7 @@ module.exports = function (RED) {
     // an output on the node.
     node.setupEventProxies = function (device) {
       let powerPrefix = device.deviceType == 'bulb' ? 'lightstate' : 'power'
-      nodeinput = false
+      internalinput = true
       device.on(powerPrefix + '-on', () =>
         device.emit('PowerEvents', { powerOn: true, state: true })
       )
@@ -392,7 +392,7 @@ module.exports = function (RED) {
     // that takes the passed properties from the underlying event (based on the
     // parameters in node.setupEventProxies) and outputs a formatted message.
     node.makeEventHandler = function (device, event) {
-          if (event == 'InfoEvents' && !nodeinput)
+          if (event == 'InfoEvents' && internalinput)
           return () => {
             node.send({
               topic: device.shortId,
