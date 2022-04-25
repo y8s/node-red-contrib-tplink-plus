@@ -1,5 +1,5 @@
 const isPlainObject = obj => Object.prototype.toString.call(obj) === '[object Object]'
-var internalinput
+var internalinput = true
 
 module.exports = function (RED) {
   'use strict'
@@ -347,7 +347,7 @@ module.exports = function (RED) {
     // an output on the node.
     node.setupEventProxies = function (device) {
       let powerPrefix = device.deviceType == 'bulb' ? 'lightstate' : 'power'
-      internalinput = true
+      //internalinput = true
       device.on(powerPrefix + '-on', () =>
         device.emit('PowerEvents', { powerOn: true, state: true })
       )
@@ -392,7 +392,7 @@ module.exports = function (RED) {
     // that takes the passed properties from the underlying event (based on the
     // parameters in node.setupEventProxies) and outputs a formatted message.
     node.makeEventHandler = function (device, event) {
-          if (event == 'InfoEvents' && internalinput)
+          if (event == 'InfoEvents')
           return () => {
             node.send({
               topic: device.shortId,
